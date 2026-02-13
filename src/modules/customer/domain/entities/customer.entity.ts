@@ -6,11 +6,11 @@ import { v4 as uuidv4 } from 'uuid';
 
 export interface CustomerProps {
   readonly id: string;
-  readonly firstName: string;
-  readonly lastName: string;
-  readonly email: Email;
-  readonly phone: PhoneNumber;
-  readonly address: string;
+  firstName: string;
+  lastName: string;
+  email: Email;
+  phone: PhoneNumber;
+  address: string;
   readonly createdAt: Date;
   updatedAt: Date;
 }
@@ -110,5 +110,44 @@ export class Customer extends Entity<CustomerProps> {
 
   get updatedAt(): Date {
     return this.props.updatedAt;
+  }
+
+  update(params: {
+    firstName?: string;
+    lastName?: string;
+    email?: Email;
+    phone?: PhoneNumber;
+    address?: string;
+  }): void {
+    if (params.firstName !== undefined) {
+      if (!params.firstName || params.firstName.trim().length === 0) {
+        throw new DomainException(
+          'First name cannot be empty',
+          'CUSTOMER_FIRST_NAME_EMPTY',
+        );
+      }
+      this.props.firstName = params.firstName.trim();
+    }
+    if (params.lastName !== undefined) {
+      if (!params.lastName || params.lastName.trim().length === 0) {
+        throw new DomainException(
+          'Last name cannot be empty',
+          'CUSTOMER_LAST_NAME_EMPTY',
+        );
+      }
+      this.props.lastName = params.lastName.trim();
+    }
+    if (params.email !== undefined) this.props.email = params.email;
+    if (params.phone !== undefined) this.props.phone = params.phone;
+    if (params.address !== undefined) {
+      if (!params.address || params.address.trim().length === 0) {
+        throw new DomainException(
+          'Address cannot be empty',
+          'CUSTOMER_ADDRESS_EMPTY',
+        );
+      }
+      this.props.address = params.address.trim();
+    }
+    this.props.updatedAt = new Date();
   }
 }
