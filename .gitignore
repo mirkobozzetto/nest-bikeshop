@@ -6,3 +6,5 @@ node_modules
 coverage
 .tsbuildinfo
 src/generated
+.claude
+claude-code-veloshop-kit.md
