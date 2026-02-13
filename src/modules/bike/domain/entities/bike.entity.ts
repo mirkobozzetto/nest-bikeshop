@@ -18,13 +18,13 @@ export enum BikeStatus {
 
 export interface BikeProps {
   readonly id: string;
-  readonly name: string;
-  readonly brand: string;
-  readonly model: string;
-  readonly type: BikeType;
-  readonly size: string;
-  readonly priceCents: number;
-  readonly dailyRateCents: number;
+  name: string;
+  brand: string;
+  model: string;
+  type: BikeType;
+  size: string;
+  priceCents: number;
+  dailyRateCents: number;
   status: BikeStatus;
   readonly createdAt: Date;
   updatedAt: Date;
@@ -139,6 +139,41 @@ export class Bike extends Entity<BikeProps> {
 
   get updatedAt(): Date {
     return this.props.updatedAt;
+  }
+
+  update(params: Partial<Omit<CreateBikeParams, 'id'>>): void {
+    if (params.name !== undefined) {
+      if (!params.name || params.name.trim().length === 0) {
+        throw new DomainException(
+          'Bike name cannot be empty',
+          'BIKE_NAME_EMPTY',
+        );
+      }
+      this.props.name = params.name.trim();
+    }
+    if (params.priceCents !== undefined) {
+      if (params.priceCents <= 0) {
+        throw new DomainException(
+          'Bike price must be positive',
+          'BIKE_PRICE_INVALID',
+        );
+      }
+      this.props.priceCents = params.priceCents;
+    }
+    if (params.dailyRateCents !== undefined) {
+      if (params.dailyRateCents <= 0) {
+        throw new DomainException(
+          'Daily rate must be positive',
+          'BIKE_DAILY_RATE_INVALID',
+        );
+      }
+      this.props.dailyRateCents = params.dailyRateCents;
+    }
+    if (params.brand !== undefined) this.props.brand = params.brand;
+    if (params.model !== undefined) this.props.model = params.model;
+    if (params.type !== undefined) this.props.type = params.type;
+    if (params.size !== undefined) this.props.size = params.size;
+    this.props.updatedAt = new Date();
   }
 
   markAsRented(): void {

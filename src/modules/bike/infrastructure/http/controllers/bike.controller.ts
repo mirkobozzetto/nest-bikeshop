@@ -8,14 +8,17 @@ import {
   Query,
 } from '@nestjs/common';
 import { CreateBikeHandler } from '../../../application/commands/create-bike.handler.js';
+import { UpdateBikeHandler } from '../../../application/commands/update-bike.handler.js';
 import { UpdateBikeStatusHandler } from '../../../application/commands/update-bike-status.handler.js';
 import { GetBikeHandler } from '../../../application/queries/get-bike.handler.js';
 import { ListBikesHandler } from '../../../application/queries/list-bikes.handler.js';
 import { CreateBikeCommand } from '../../../application/commands/create-bike.command.js';
+import { UpdateBikeCommand } from '../../../application/commands/update-bike.command.js';
 import { UpdateBikeStatusCommand } from '../../../application/commands/update-bike-status.command.js';
 import { GetBikeQuery } from '../../../application/queries/get-bike.query.js';
 import { ListBikesQuery } from '../../../application/queries/list-bikes.query.js';
 import { CreateBikeRequest } from '../dtos/create-bike.request.js';
+import { UpdateBikeRequest } from '../dtos/update-bike.request.js';
 import { UpdateBikeStatusRequest } from '../dtos/update-bike-status.request.js';
 import type {
   BikeType,
@@ -26,6 +29,7 @@ import type {
 export class BikeController {
   constructor(
     private readonly createBikeHandler: CreateBikeHandler,
+    private readonly updateBikeHandler: UpdateBikeHandler,
     private readonly updateBikeStatusHandler: UpdateBikeStatusHandler,
     private readonly getBikeHandler: GetBikeHandler,
     private readonly listBikesHandler: ListBikesHandler,
@@ -60,6 +64,23 @@ export class BikeController {
     return this.listBikesHandler.execute(
       new ListBikesQuery(type, status, brand),
     );
+  }
+
+  @Patch(':id')
+  async update(@Param('id') id: string, @Body() body: UpdateBikeRequest) {
+    await this.updateBikeHandler.execute(
+      new UpdateBikeCommand(
+        id,
+        body.name,
+        body.brand,
+        body.model,
+        body.type,
+        body.size,
+        body.priceCents,
+        body.dailyRateCents,
+      ),
+    );
+    return { success: true };
   }
 
   @Patch(':id/status')
