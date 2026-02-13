@@ -7,6 +7,7 @@ import {
   Body,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { RegisterCustomerHandler } from '../../../application/commands/register-customer.handler.js';
 import { UpdateCustomerHandler } from '../../../application/commands/update-customer.handler.js';
 import { GetCustomerHandler } from '../../../application/queries/get-customer.handler.js';
@@ -18,6 +19,7 @@ import { ListCustomersQuery } from '../../../application/queries/list-customers.
 import { RegisterCustomerRequest } from '../dtos/register-customer.request.js';
 import { UpdateCustomerRequest } from '../dtos/update-customer.request.js';
 
+@ApiTags('Customers')
 @Controller('customers')
 export class CustomerController {
   constructor(

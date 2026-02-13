@@ -1,4 +1,5 @@
 import { Controller, Post, Get, Param, Body } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { RecordMovementHandler } from '../../../application/commands/record-movement.handler.js';
 import { GetStockHandler } from '../../../application/queries/get-stock.handler.js';
 import { GetMovementsHandler } from '../../../application/queries/get-movements.handler.js';
@@ -7,6 +8,7 @@ import { GetStockQuery } from '../../../application/queries/get-stock.query.js';
 import { GetMovementsQuery } from '../../../application/queries/get-movements.query.js';
 import { RecordMovementRequest } from '../dtos/record-movement.request.js';
 
+@ApiTags('Inventory')
 @Controller('inventory')
 export class InventoryController {
   constructor(

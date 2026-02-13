@@ -7,6 +7,7 @@ import {
   Body,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CreateBikeHandler } from '../../../application/commands/create-bike.handler.js';
 import { UpdateBikeHandler } from '../../../application/commands/update-bike.handler.js';
 import { UpdateBikeStatusHandler } from '../../../application/commands/update-bike-status.handler.js';
@@ -25,6 +26,7 @@ import type {
   BikeStatus,
 } from '../../../domain/entities/bike.entity.js';
 
+@ApiTags('Bikes')
 @Controller('bikes')
 export class BikeController {
   constructor(

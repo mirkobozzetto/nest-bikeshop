@@ -7,6 +7,7 @@ import {
   Body,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CreateRentalHandler } from '../../../application/commands/create-rental.handler.js';
 import { UpdateRentalStatusHandler } from '../../../application/commands/update-rental-status.handler.js';
 import { ExtendRentalHandler } from '../../../application/commands/extend-rental.handler.js';
@@ -22,6 +23,7 @@ import { UpdateRentalStatusRequest } from '../dtos/update-rental-status.request.
 import { ExtendRentalRequest } from '../dtos/extend-rental.request.js';
 import type { RentalStatus } from '../../../domain/entities/rental.entity.js';
 
+@ApiTags('Rentals')
 @Controller('rentals')
 export class RentalController {
   constructor(

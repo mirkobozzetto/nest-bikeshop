@@ -7,6 +7,7 @@ import {
   Body,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CreateSaleHandler } from '../../../application/commands/create-sale.handler.js';
 import { UpdateSaleStatusHandler } from '../../../application/commands/update-sale-status.handler.js';
 import { GetSaleHandler } from '../../../application/queries/get-sale.handler.js';
@@ -19,6 +20,7 @@ import { CreateSaleRequest } from '../dtos/create-sale.request.js';
 import { UpdateSaleStatusRequest } from '../dtos/update-sale-status.request.js';
 import type { SaleStatus } from '../../../domain/entities/sale.entity.js';
 
+@ApiTags('Sales')
 @Controller('sales')
 export class SaleController {
   constructor(
