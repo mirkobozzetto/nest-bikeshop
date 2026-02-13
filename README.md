@@ -1,4 +1,4 @@
-# VeloShop
+# Bikeshop Management API
 
 Bike shop management API built with NestJS and Clean Architecture. Handles bike catalog, inventory tracking, rentals, sales, and customer management.
 
@@ -52,6 +52,7 @@ module-name/
 ```
 
 **Key design decisions:**
+
 - Dependency injection via Symbol tokens, not concrete classes
 - Entities use named constructors (`Bike.create()`, `Rental.start()`)
 - Prices stored as integers in cents (no floating point)
@@ -62,62 +63,66 @@ module-name/
 
 ### Bikes
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/bikes` | Create a new bike |
-| `GET` | `/bikes` | List bikes (filter by type, status, brand) |
-| `GET` | `/bikes/:id` | Get bike by ID |
+| Method  | Endpoint            | Description                                               |
+| ------- | ------------------- | --------------------------------------------------------- |
+| `POST`  | `/bikes`            | Create a new bike                                         |
+| `GET`   | `/bikes`            | List bikes (filter by type, status, brand)                |
+| `GET`   | `/bikes/:id`        | Get bike by ID                                            |
 | `PATCH` | `/bikes/:id/status` | Update bike status (rent, return, sell, maintain, retire) |
 
 ### Customers
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/customers` | Register a new customer |
-| `GET` | `/customers` | List customers |
-| `GET` | `/customers/:id` | Get customer by ID |
+| Method | Endpoint         | Description             |
+| ------ | ---------------- | ----------------------- |
+| `POST` | `/customers`     | Register a new customer |
+| `GET`  | `/customers`     | List customers          |
+| `GET`  | `/customers/:id` | Get customer by ID      |
 
 ### Inventory
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/inventory/movements` | Record a stock movement |
-| `GET` | `/inventory/stock/:bikeId` | Get current stock level for a bike |
-| `GET` | `/inventory/movements/:bikeId` | Get movement history for a bike |
+| Method | Endpoint                       | Description                        |
+| ------ | ------------------------------ | ---------------------------------- |
+| `POST` | `/inventory/movements`         | Record a stock movement            |
+| `GET`  | `/inventory/stock/:bikeId`     | Get current stock level for a bike |
+| `GET`  | `/inventory/movements/:bikeId` | Get movement history for a bike    |
 
 ### Rentals
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/rentals` | Create a rental reservation |
-| `GET` | `/rentals` | List rentals (filter by customerId, status) |
-| `GET` | `/rentals/:id` | Get rental by ID |
+| Method  | Endpoint              | Description                                  |
+| ------- | --------------------- | -------------------------------------------- |
+| `POST`  | `/rentals`            | Create a rental reservation                  |
+| `GET`   | `/rentals`            | List rentals (filter by customerId, status)  |
+| `GET`   | `/rentals/:id`        | Get rental by ID                             |
 | `PATCH` | `/rentals/:id/status` | Update rental status (start, return, cancel) |
-| `PATCH` | `/rentals/:id/extend` | Extend rental end date |
+| `PATCH` | `/rentals/:id/extend` | Extend rental end date                       |
 
 ### Sales
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/sales` | Create a sale |
-| `GET` | `/sales/:id` | Get sale by ID |
+| Method  | Endpoint            | Description                          |
+| ------- | ------------------- | ------------------------------------ |
+| `POST`  | `/sales`            | Create a sale                        |
+| `GET`   | `/sales/:id`        | Get sale by ID                       |
 | `PATCH` | `/sales/:id/status` | Update sale status (confirm, cancel) |
 
 ## Domain Models
 
 ### Bike
+
 Types: `ROAD`, `MOUNTAIN`, `CITY`, `ELECTRIC`, `KIDS`
 Status flow: `AVAILABLE` -> `RENTED` | `SOLD` | `MAINTENANCE` -> `RETIRED`
 
 ### Rental
+
 Status flow: `RESERVED` -> `ACTIVE` -> `RETURNED`
 Pricing: sum of (daily rate x number of days) for each bike in the rental.
 
 ### Sale
+
 Status flow: `PENDING` -> `CONFIRMED` | `CANCELLED`
 Supports VAT calculation.
 
 ### Inventory Movement
+
 Types: `IN`, `OUT`, `ADJUSTMENT`
 Reasons: `PURCHASE`, `SALE`, `RENTAL_OUT`, `RENTAL_RETURN`, `MAINTENANCE`, `LOSS`, `ADJUSTMENT`
 
@@ -196,6 +201,7 @@ pnpm prisma:studio   # Open Prisma Studio
 ## Project Status
 
 **Completed:**
+
 - All 5 domain modules (Bike, Customer, Inventory, Rental, Sale)
 - Shared value objects (Money, DateRange)
 - Full Prisma schema with migrations
@@ -203,6 +209,7 @@ pnpm prisma:studio   # Open Prisma Studio
 - Build and lint clean
 
 **In Progress:**
+
 - Inter-module integration (inventory checks on rental/sale)
 - Integration and E2E tests
 - API documentation (Swagger)
