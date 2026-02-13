@@ -4,6 +4,7 @@ import { PrismaSaleRepository } from './persistence/repositories/prisma-sale.rep
 import { CreateSaleHandler } from '../application/commands/create-sale.handler.js';
 import { UpdateSaleStatusHandler } from '../application/commands/update-sale-status.handler.js';
 import { GetSaleHandler } from '../application/queries/get-sale.handler.js';
+import { ListSalesHandler } from '../application/queries/list-sales.handler.js';
 import { SaleController } from './http/controllers/sale.controller.js';
 import { PrismaService } from '../../../libs/prisma.service.js';
 
@@ -15,6 +16,7 @@ import { PrismaService } from '../../../libs/prisma.service.js';
     CreateSaleHandler,
     UpdateSaleStatusHandler,
     GetSaleHandler,
+    ListSalesHandler,
   ],
   exports: [SALE_REPOSITORY],
 })
