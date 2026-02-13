@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum BikeType {
+  ROAD
+  MOUNTAIN
+  CITY
+  ELECTRIC
+  KIDS
+}
+
+enum BikeStatus {
+  AVAILABLE
+  RENTED
+  SOLD
+  MAINTENANCE
+  RETIRED
+}
+
+model Bike {
+  id             String     @id @default(uuid()) @db.Uuid
+  name           String     @map("name")
+  brand          String     @map("brand")
+  model          String     @map("model_name")
+  type           BikeType   @map("type")
+  size           String     @map("size")
+  priceCents     Int        @map("price_cents")
+  dailyRateCents Int        @map("daily_rate_cents")
+  status         BikeStatus @default(AVAILABLE) @map("status")
+  createdAt      DateTime   @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt      DateTime   @updatedAt @map("updated_at") @db.Timestamptz()
+
+  @@index([status])
+  @@index([type, status])
+  @@index([brand, model])
+  @@map("bikes")
+}
