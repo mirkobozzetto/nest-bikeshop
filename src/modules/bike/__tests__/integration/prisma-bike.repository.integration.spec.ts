@@ -1,14 +1,22 @@
 import { describe, it, expect, beforeAll, beforeEach, afterAll } from 'vitest';
 import { v4 as uuidv4 } from 'uuid';
-import { prismaTest, cleanDatabase, closePrisma } from '../../../../test-utils/prisma-test.helper.js';
+import {
+  prismaTest,
+  cleanDatabase,
+  closePrisma,
+} from '../../../../test-utils/prisma-test.helper.js';
 import { PrismaBikeRepository } from '../../infrastructure/persistence/repositories/prisma-bike.repository.js';
-import { Bike, BikeType, BikeStatus } from '../../domain/entities/bike.entity.js';
+import {
+  Bike,
+  BikeType,
+  BikeStatus,
+} from '../../domain/entities/bike.entity.js';
 
 describe('PrismaBikeRepository Integration Tests', () => {
   let repository: PrismaBikeRepository;
 
-  beforeAll(async () => {
-    repository = new PrismaBikeRepository(prismaTest as any);
+  beforeAll(() => {
+    repository = new PrismaBikeRepository(prismaTest);
   });
 
   beforeEach(async () => {
@@ -174,7 +182,9 @@ describe('PrismaBikeRepository Integration Tests', () => {
       await repository.save(availableBike);
       await repository.save(maintenanceBike);
 
-      const maintenance = await repository.findAll({ status: BikeStatus.MAINTENANCE });
+      const maintenance = await repository.findAll({
+        status: BikeStatus.MAINTENANCE,
+      });
 
       expect(maintenance).toHaveLength(1);
       expect(maintenance[0].status).toBe(BikeStatus.MAINTENANCE);

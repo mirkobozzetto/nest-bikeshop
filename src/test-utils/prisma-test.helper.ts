@@ -9,7 +9,16 @@ if (!connectionString) {
 
 const adapter = new PrismaPg({ connectionString });
 
-export const prismaTest = new PrismaClient({ adapter });
+class TestPrismaService extends PrismaClient {
+  onModuleInit(): Promise<void> {
+    return this.$connect();
+  }
+  onModuleDestroy(): Promise<void> {
+    return this.$disconnect();
+  }
+}
+
+export const prismaTest = new TestPrismaService({ adapter });
 
 export async function cleanDatabase(): Promise<void> {
   await prismaTest.$executeRawUnsafe(
@@ -17,6 +26,6 @@ export async function cleanDatabase(): Promise<void> {
   );
 }
 
-export async function closePrisma(): Promise<void> {
-  await prismaTest.$disconnect();
+export function closePrisma(): Promise<void> {
+  return prismaTest.$disconnect();
 }

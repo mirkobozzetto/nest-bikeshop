@@ -1,6 +1,10 @@
 import { describe, it, expect, beforeAll, beforeEach, afterAll } from 'vitest';
 import { v4 as uuidv4 } from 'uuid';
-import { prismaTest, cleanDatabase, closePrisma } from '../../../../test-utils/prisma-test.helper.js';
+import {
+  prismaTest,
+  cleanDatabase,
+  closePrisma,
+} from '../../../../test-utils/prisma-test.helper.js';
 import { PrismaInventoryRepository } from '../../infrastructure/persistence/repositories/prisma-inventory.repository.js';
 import {
   InventoryMovement,
@@ -12,8 +16,8 @@ describe('PrismaInventoryRepository Integration Tests', () => {
   let repository: PrismaInventoryRepository;
   let testBikeId: string;
 
-  beforeAll(async () => {
-    repository = new PrismaInventoryRepository(prismaTest as any);
+  beforeAll(() => {
+    repository = new PrismaInventoryRepository(prismaTest);
     testBikeId = uuidv4();
   });
 
@@ -176,8 +180,10 @@ describe('PrismaInventoryRepository Integration Tests', () => {
       await repository.saveMovement(movement1);
       await repository.saveMovement(movement2);
 
-      const movementsForTestBike = await repository.findMovementsByBikeId(testBikeId);
-      const movementsForOtherBike = await repository.findMovementsByBikeId(otherBikeId);
+      const movementsForTestBike =
+        await repository.findMovementsByBikeId(testBikeId);
+      const movementsForOtherBike =
+        await repository.findMovementsByBikeId(otherBikeId);
 
       expect(movementsForTestBike).toHaveLength(1);
       expect(movementsForTestBike[0].id).toBe(movement1.id);
@@ -220,7 +226,9 @@ describe('PrismaInventoryRepository Integration Tests', () => {
       expect(movements).toHaveLength(3);
       expect(movements.some((m) => m.type === MovementType.IN)).toBe(true);
       expect(movements.some((m) => m.type === MovementType.OUT)).toBe(true);
-      expect(movements.some((m) => m.type === MovementType.ADJUSTMENT)).toBe(true);
+      expect(movements.some((m) => m.type === MovementType.ADJUSTMENT)).toBe(
+        true,
+      );
     });
 
     it('should handle different movement reasons', async () => {
@@ -255,9 +263,15 @@ describe('PrismaInventoryRepository Integration Tests', () => {
       const movements = await repository.findMovementsByBikeId(testBikeId);
 
       expect(movements).toHaveLength(3);
-      expect(movements.some((m) => m.reason === MovementReason.PURCHASE)).toBe(true);
-      expect(movements.some((m) => m.reason === MovementReason.SALE)).toBe(true);
-      expect(movements.some((m) => m.reason === MovementReason.MAINTENANCE)).toBe(true);
+      expect(movements.some((m) => m.reason === MovementReason.PURCHASE)).toBe(
+        true,
+      );
+      expect(movements.some((m) => m.reason === MovementReason.SALE)).toBe(
+        true,
+      );
+      expect(
+        movements.some((m) => m.reason === MovementReason.MAINTENANCE),
+      ).toBe(true);
     });
   });
 });

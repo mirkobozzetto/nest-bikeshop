@@ -1,13 +1,17 @@
 import { describe, it, expect, beforeAll, beforeEach, afterAll } from 'vitest';
-import { prismaTest, cleanDatabase, closePrisma } from '../../../../test-utils/prisma-test.helper.js';
+import {
+  prismaTest,
+  cleanDatabase,
+  closePrisma,
+} from '../../../../test-utils/prisma-test.helper.js';
 import { PrismaCustomerRepository } from '../../infrastructure/persistence/repositories/prisma-customer.repository.js';
 import { Customer } from '../../domain/entities/customer.entity.js';
 
 describe('PrismaCustomerRepository Integration Tests', () => {
   let repository: PrismaCustomerRepository;
 
-  beforeAll(async () => {
-    repository = new PrismaCustomerRepository(prismaTest as any);
+  beforeAll(() => {
+    repository = new PrismaCustomerRepository(prismaTest);
   });
 
   beforeEach(async () => {
@@ -79,7 +83,9 @@ describe('PrismaCustomerRepository Integration Tests', () => {
 
       await repository.save(customer);
 
-      const retrieved = await repository.findByEmail('alice.johnson@example.com');
+      const retrieved = await repository.findByEmail(
+        'alice.johnson@example.com',
+      );
 
       expect(retrieved).not.toBeNull();
       expect(retrieved?.id).toBe(customer.id);
@@ -111,7 +117,9 @@ describe('PrismaCustomerRepository Integration Tests', () => {
       await repository.save(customer1);
       await repository.save(customer2);
 
-      const retrieved = await repository.findByEmail('charlie.brown@example.com');
+      const retrieved = await repository.findByEmail(
+        'charlie.brown@example.com',
+      );
 
       expect(retrieved?.id).toBe(customer2.id);
       expect(retrieved?.firstName).toBe('Charlie');
