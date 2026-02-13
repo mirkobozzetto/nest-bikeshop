@@ -2,7 +2,7 @@
 
 ## Projet
 Application de gestion de vente et location de velos avec stock.
-Stack : NestJS 11 + TypeScript 5.5+ strict + PostgreSQL 16 + Prisma 6.
+Stack : NestJS 11 + TypeScript 5.9+ strict + PostgreSQL 16 + Prisma 7.
 Runtime : Node.js 22 LTS.
 
 ## Architecture
