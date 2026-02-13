@@ -8,8 +8,11 @@ import { GetRentalHandler } from '../application/queries/get-rental.handler.js';
 import { ListRentalsHandler } from '../application/queries/list-rentals.handler.js';
 import { RentalController } from './http/controllers/rental.controller.js';
 import { PrismaService } from '../../../libs/prisma.service.js';
+import { InventoryModule } from '../../inventory/infrastructure/inventory.module.js';
+import { BikeModule } from '../../bike/infrastructure/bike.module.js';
 
 @Module({
+  imports: [InventoryModule, BikeModule],
   controllers: [RentalController],
   providers: [
     PrismaService,
