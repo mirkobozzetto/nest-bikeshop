@@ -1,7 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ListBikesHandler } from '../../application/queries/list-bikes.handler.js';
 import { ListBikesQuery } from '../../application/queries/list-bikes.query.js';
-import { Bike, BikeType, BikeStatus } from '../../domain/entities/bike.entity.js';
+import {
+  Bike,
+  BikeType,
+  BikeStatus,
+} from '../../domain/entities/bike.entity.js';
 import type { BikeRepositoryPort } from '../../domain/ports/bike.repository.port.js';
 
 describe('ListBikesHandler', () => {

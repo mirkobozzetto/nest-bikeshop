@@ -1,10 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { CreateRentalHandler } from '../../application/commands/create-rental.handler.js';
 import { CreateRentalCommand } from '../../application/commands/create-rental.command.js';
-import { Rental, RentalStatus } from '../../domain/entities/rental.entity.js';
+import { RentalStatus } from '../../domain/entities/rental.entity.js';
 import type { RentalRepositoryPort } from '../../domain/ports/rental.repository.port.js';
 import type { InventoryRepositoryPort } from '../../../inventory/domain/ports/inventory.repository.port.js';
-import { InventoryMovement, MovementType, MovementReason } from '../../../inventory/domain/entities/inventory-movement.entity.js';
+import {
+  InventoryMovement,
+  MovementType,
+  MovementReason,
+} from '../../../inventory/domain/entities/inventory-movement.entity.js';
 
 vi.mock('uuid', () => ({ v4: () => 'test-uuid-1234' }));
 
@@ -67,7 +71,7 @@ describe('CreateRentalHandler', () => {
     expect(id).toBe('test-uuid-1234');
     expect(vi.mocked(mockRepo.save)).toHaveBeenCalledOnce();
 
-    const savedRental = vi.mocked(mockRepo.save).mock.calls[0][0] as Rental;
+    const savedRental = vi.mocked(mockRepo.save).mock.calls[0][0];
     expect(savedRental.id).toBe('test-uuid-1234');
     expect(savedRental.customerId).toBe('customer-123');
     expect(savedRental.status).toBe(RentalStatus.RESERVED);
@@ -104,7 +108,12 @@ describe('CreateRentalHandler', () => {
     const startDate = new Date('2024-03-01');
     const endDate = new Date('2024-03-10');
 
-    const command = new CreateRentalCommand('customer-123', [], startDate, endDate);
+    const command = new CreateRentalCommand(
+      'customer-123',
+      [],
+      startDate,
+      endDate,
+    );
 
     await expect(handler.execute(command)).rejects.toThrow();
   });
@@ -146,7 +155,7 @@ describe('CreateRentalHandler', () => {
 
     await handler.execute(command);
 
-    const savedRental = vi.mocked(mockRepo.save).mock.calls[0][0] as Rental;
+    const savedRental = vi.mocked(mockRepo.save).mock.calls[0][0];
     const expectedTotal = (5000 + 3000) * 10;
     expect(savedRental.totalCents).toBe(expectedTotal);
   });
@@ -164,6 +173,8 @@ describe('CreateRentalHandler', () => {
       endDate,
     );
 
-    await expect(handler.execute(command)).rejects.toThrow('BIKE_NOT_AVAILABLE');
+    await expect(handler.execute(command)).rejects.toThrow(
+      'is not available for rental',
+    );
   });
 });

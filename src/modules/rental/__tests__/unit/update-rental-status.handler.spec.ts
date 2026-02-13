@@ -7,7 +7,11 @@ import { DateRange } from '../../../shared/domain/value-objects/date-range.vo.js
 import type { RentalRepositoryPort } from '../../domain/ports/rental.repository.port.js';
 import type { InventoryRepositoryPort } from '../../../inventory/domain/ports/inventory.repository.port.js';
 import type { BikeRepositoryPort } from '../../../bike/domain/ports/bike.repository.port.js';
-import { Bike, BikeStatus, BikeType } from '../../../bike/domain/entities/bike.entity.js';
+import {
+  Bike,
+  BikeStatus,
+  BikeType,
+} from '../../../bike/domain/entities/bike.entity.js';
 
 vi.mock('uuid', () => ({ v4: () => 'test-uuid-1234' }));
 
@@ -34,7 +38,11 @@ describe('UpdateRentalStatusHandler', () => {
       findAll: vi.fn(),
       delete: vi.fn(),
     };
-    handler = new UpdateRentalStatusHandler(mockRepo, mockInventoryRepo, mockBikeRepo);
+    handler = new UpdateRentalStatusHandler(
+      mockRepo,
+      mockInventoryRepo,
+      mockBikeRepo,
+    );
   });
 
   it('should start a reserved rental', async () => {

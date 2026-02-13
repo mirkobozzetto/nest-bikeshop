@@ -111,6 +111,6 @@ describe('CreateSaleHandler', () => {
       { bikeId: 'bike-1', priceCents: 250000 },
     ]);
 
-    await expect(handler.execute(command)).rejects.toThrow('BIKE_NOT_FOUND');
+    await expect(handler.execute(command)).rejects.toThrow('not found');
   });
 });

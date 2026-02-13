@@ -1,7 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { UpdateBikeHandler } from '../../application/commands/update-bike.handler.js';
 import { UpdateBikeCommand } from '../../application/commands/update-bike.command.js';
-import { Bike, BikeType, BikeStatus } from '../../domain/entities/bike.entity.js';
+import {
+  Bike,
+  BikeType,
+  BikeStatus,
+} from '../../domain/entities/bike.entity.js';
 import type { BikeRepositoryPort } from '../../domain/ports/bike.repository.port.js';
 import { DomainException } from '../../../shared/domain/exceptions/domain.exception.js';
 

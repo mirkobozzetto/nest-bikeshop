@@ -1,7 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { GetBikeHandler } from '../../application/queries/get-bike.handler.js';
 import { GetBikeQuery } from '../../application/queries/get-bike.query.js';
-import { Bike, BikeType, BikeStatus } from '../../domain/entities/bike.entity.js';
+import {
+  Bike,
+  BikeType,
+  BikeStatus,
+} from '../../domain/entities/bike.entity.js';
 import type { BikeRepositoryPort } from '../../domain/ports/bike.repository.port.js';
 import { DomainException } from '../../../shared/domain/exceptions/domain.exception.js';
 
