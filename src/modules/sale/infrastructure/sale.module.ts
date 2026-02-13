@@ -7,8 +7,11 @@ import { GetSaleHandler } from '../application/queries/get-sale.handler.js';
 import { ListSalesHandler } from '../application/queries/list-sales.handler.js';
 import { SaleController } from './http/controllers/sale.controller.js';
 import { PrismaService } from '../../../libs/prisma.service.js';
+import { InventoryModule } from '../../inventory/infrastructure/inventory.module.js';
+import { BikeModule } from '../../bike/infrastructure/bike.module.js';
 
 @Module({
+  imports: [InventoryModule, BikeModule],
   controllers: [SaleController],
   providers: [
     PrismaService,
