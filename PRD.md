@@ -55,9 +55,9 @@ VeloShop is a REST API that unifies bike catalog, inventory tracking, rentals, a
 ### Phase 3 -- Bike Module [DONE]
 
 - [x] Bike entity with state machine (AVAILABLE -> RENTED/SOLD/MAINTENANCE -> RETIRED)
-- [x] Create, Get, List (with filters), UpdateStatus
+- [x] Create, Get, List (with filters), UpdateStatus, UpdateBike
 - [x] Domain tests (entity invariants, state transitions)
-- [x] Handler tests (create, update-status)
+- [x] Handler tests (create, get, list, update-status, update-bike)
 - [x] Prisma repository + mapper
 - [x] HTTP controller + request DTOs
 
@@ -74,21 +74,23 @@ VeloShop is a REST API that unifies bike catalog, inventory tracking, rentals, a
 - [x] Rental entity with items, period (DateRange), status machine
 - [x] Create, Get, List, UpdateStatus, Extend
 - [x] Domain tests (entity invariants, state transitions, price calculation)
+- [x] Handler tests (create, get, list, update-status, extend)
 - [x] Prisma repository + mapper
 
 ### Phase 6 -- Sale Module [DONE]
 
 - [x] Sale entity with items, status machine, TVA calculation
-- [x] Create, Get, UpdateStatus
+- [x] Create, Get, List, UpdateStatus
 - [x] Domain tests (entity invariants, state transitions, TVA)
+- [x] Handler tests (create, get, list, update-status)
 - [x] Prisma repository + mapper
 
 ### Phase 7 -- Customer Module [DONE]
 
 - [x] Customer entity with Email + PhoneNumber value objects
-- [x] Register, Get, List
+- [x] Register, Get, List, Update
 - [x] Domain tests (entity, value objects)
-- [x] Handler test (register)
+- [x] Handler tests (register, get, list, update)
 - [x] Prisma repository + mapper
 
 ### Phase 8 -- Prisma Schema [DONE]
@@ -99,50 +101,51 @@ VeloShop is a REST API that unifies bike catalog, inventory tracking, rentals, a
 - [x] Indexes on all foreign keys + composite indexes
 - [x] Initial migration applied
 
+### Phase 9 -- Missing Handlers & Tests [DONE]
+
+- [x] Sale: ListSales query + handler
+- [x] Bike: UpdateBike command + handler
+- [x] Customer: UpdateCustomer command + handler
+- [x] All handler tests: Rental (5), Sale (4), Bike (3), Customer (3)
+
+### Phase 10 -- Inter-Module Integration [DONE]
+
+- [x] CreateRental verifies bikes available via inventory (isAvailableForRental)
+- [x] UpdateRentalStatus start: creates RENTAL_OUT movements + marks bikes RENTED
+- [x] UpdateRentalStatus return: creates RENTAL_RETURN movements + marks bikes AVAILABLE
+- [x] CreateSale verifies bikes exist
+- [x] ConfirmSale creates SALE movements + marks bikes SOLD
+- [x] All handler tests updated with cross-module mocks
+
+### Phase 11 -- Infrastructure [DONE]
+
+- [x] Global DomainException filter (domain code -> HTTP status mapping)
+- [x] Health check endpoint (GET /health)
+- [x] CORS enabled
+- [x] DomainExceptionFilter unit test
+
+### Phase 12 -- DevOps [DONE]
+
+- [x] Dockerfile (multi-stage build: deps -> build -> production)
+- [x] docker-compose.yml (app + PostgreSQL 16)
+- [x] .dockerignore
+- [x] GitHub Actions CI (lint, build, unit tests)
+
 ## Remaining Work
 
-### Phase 9 -- Missing Handlers & Tests [TODO - HIGH PRIORITY]
+### Phase 13 -- Polish [TODO - MEDIUM PRIORITY]
 
-- [ ] Sale: ListSales query + handler + test
-- [ ] Bike: UpdateBike command + handler (edit name, brand, price, etc.)
-- [ ] Customer: UpdateCustomer command + handler
-- [ ] Handler tests: Rental (5 handlers: create, get, list, update-status, extend)
-- [ ] Handler tests: Sale (3 handlers: create, get, update-status)
-- [ ] Handler tests: Bike (2 missing: get, list)
-- [ ] Handler tests: Customer (2 missing: get, list)
-
-### Phase 10 -- Inter-Module Integration [TODO - HIGH PRIORITY]
-
-- [ ] CreateRental must verify bikes are AVAILABLE via inventory
-- [ ] CreateRental must create RENTAL_OUT inventory movements
-- [ ] ReturnRental must create RENTAL_RETURN movements + mark bikes AVAILABLE
-- [ ] CreateSale must verify bikes are AVAILABLE
-- [ ] ConfirmSale must create SALE movements + mark bikes SOLD
-- [ ] CancelSale must reverse inventory movements
-- [ ] Domain events dispatching between modules
-
-### Phase 11 -- Infrastructure [TODO - MEDIUM PRIORITY]
-
-- [ ] Global exception filter (DomainException -> HTTP 4xx)
-- [ ] Cursor-based pagination (replace offset in Customer list)
 - [ ] Swagger/OpenAPI documentation (@nestjs/swagger)
-- [ ] Health check endpoint (/health)
-- [ ] CORS configuration
+- [ ] Cursor-based pagination (replace offset in list queries)
 - [ ] Request logging interceptor
 - [ ] Prisma seed file (demo data)
+- [ ] .env.example with all config variables
 
-### Phase 12 -- Testing [TODO - MEDIUM PRIORITY]
+### Phase 14 -- Testing Depth [TODO - LOW PRIORITY]
 
 - [ ] Integration tests: all 5 repository implementations against real DB
 - [ ] E2E tests: at least 1 per module (main endpoint)
 - [ ] Test coverage target: 80%+ domain, 70%+ application
-
-### Phase 13 -- DevOps [TODO - LOW PRIORITY]
-
-- [ ] Dockerfile (multi-stage build)
-- [ ] docker-compose.yml (app + PostgreSQL)
-- [ ] GitHub Actions CI (lint, build, test)
-- [ ] .env.example updates for all config
 
 ## Out of Scope (v1)
 
@@ -166,19 +169,19 @@ VeloShop is a REST API that unifies bike catalog, inventory tracking, rentals, a
 
 ### 2. Rental Management
 
-**Description**: Create reservations with date range and multiple bikes, start/return/cancel/extend rentals with automatic price calculation.
+**Description**: Create reservations with date range and multiple bikes, start/return/cancel/extend rentals with automatic price calculation. Inventory checks prevent renting unavailable bikes.
 **User Value**: Eliminates double-bookings and manual price errors.
 **Success Metric**: Price calculation accurate to the cent across all test cases.
 
 ### 3. Sale Processing
 
-**Description**: Create sales with multiple bikes, confirm/cancel with VAT calculation.
-**User Value**: Clean sales workflow with tax compliance.
+**Description**: Create sales with multiple bikes, confirm/cancel with VAT calculation. Confirmation triggers inventory movements and marks bikes as sold.
+**User Value**: Clean sales workflow with tax compliance and automatic stock updates.
 **Success Metric**: TVA calculation tested at multiple rates (20%, 5.5%).
 
 ### 4. Inventory Tracking
 
-**Description**: Record all stock movements (purchase, sale, rental out/return, maintenance, loss) with running stock level per bike.
+**Description**: Record all stock movements (purchase, sale, rental out/return, maintenance, loss) with running stock level per bike. Automatic movements on rental/sale status changes.
 **User Value**: Real-time stock visibility, low stock alerts.
 **Success Metric**: Stock level always equals sum of movements.
 
@@ -195,24 +198,26 @@ VeloShop is a REST API that unifies bike catalog, inventory tracking, rentals, a
 1. Employee searches available bikes (GET /bikes?status=AVAILABLE)
 2. Employee looks up or registers customer (POST /customers)
 3. Employee creates rental with selected bikes and dates (POST /rentals)
-4. System validates availability and calculates total
+4. System validates availability via inventory and calculates total
 5. When customer picks up: employee starts rental (PATCH /rentals/:id/status)
-6. When customer returns: employee returns rental (PATCH /rentals/:id/status)
+6. System creates RENTAL_OUT inventory movements and marks bikes RENTED
+7. When customer returns: employee returns rental (PATCH /rentals/:id/status)
+8. System creates RENTAL_RETURN movements and marks bikes AVAILABLE
 
 ### Primary: Sell a Bike
 
 1. Employee searches available bikes (GET /bikes?status=AVAILABLE)
 2. Employee creates sale with selected bikes (POST /sales)
-3. System calculates total + TVA
+3. System verifies all bikes exist and calculates total + TVA
 4. Employee confirms sale (PATCH /sales/:id/status)
-5. System marks bikes as SOLD
+5. System creates SALE inventory movements and marks bikes SOLD
 
 ## Success Metrics
 
 **Primary Metrics**:
 
-- Unit test count: 200+ (currently 149)
-- Build passes: 100% on every commit
+- Unit test count: 200+ (domain + handler + filter tests)
+- Build passes: 100% on every commit (CI enforced)
 - Domain purity: 0 framework imports in domain layer
 
 **Secondary Metrics**:

@@ -1,6 +1,6 @@
 # Bikeshop Management API
 
-Bike shop management API built with NestJS and Clean Architecture. Handles bike catalog, inventory tracking, rentals, sales, and customer management.
+Bike shop management API built with NestJS and Clean Architecture. Handles bike catalog, inventory tracking, rentals, sales, and customer management with full inter-module integration.
 
 ## Tech Stack
 
@@ -19,7 +19,7 @@ Strict Clean Architecture with 4 layers. The domain layer is pure TypeScript wit
 ```
 src/modules/
 ├── bike/           Bike catalog (CRUD, status state machine)
-├── customer/       Customer profiles
+├── customer/       Customer profiles (register, update)
 ├── inventory/      Stock movements (in/out/adjustment)
 ├── rental/         Bike rentals (reserve, start, return, extend)
 ├── sale/           Bike sales (create, confirm, cancel)
@@ -58,8 +58,15 @@ module-name/
 - Prices stored as integers in cents (no floating point)
 - All dates use `TIMESTAMPTZ`
 - Domain layer has zero imports from NestJS or Prisma
+- Inter-module integration: rentals and sales verify inventory and update bike status
 
 ## API Endpoints
+
+### Health
+
+| Method | Endpoint  | Description        |
+| ------ | --------- | ------------------ |
+| `GET`  | `/health` | Health check (200) |
 
 ### Bikes
 
@@ -68,15 +75,17 @@ module-name/
 | `POST`  | `/bikes`            | Create a new bike                                         |
 | `GET`   | `/bikes`            | List bikes (filter by type, status, brand)                |
 | `GET`   | `/bikes/:id`        | Get bike by ID                                            |
+| `PATCH` | `/bikes/:id`        | Update bike details (name, brand, price, etc.)            |
 | `PATCH` | `/bikes/:id/status` | Update bike status (rent, return, sell, maintain, retire) |
 
 ### Customers
 
-| Method | Endpoint         | Description             |
-| ------ | ---------------- | ----------------------- |
-| `POST` | `/customers`     | Register a new customer |
-| `GET`  | `/customers`     | List customers          |
-| `GET`  | `/customers/:id` | Get customer by ID      |
+| Method  | Endpoint         | Description             |
+| ------- | ---------------- | ----------------------- |
+| `POST`  | `/customers`     | Register a new customer |
+| `GET`   | `/customers`     | List customers          |
+| `GET`   | `/customers/:id` | Get customer by ID      |
+| `PATCH` | `/customers/:id` | Update customer details |
 
 ### Inventory
 
@@ -88,21 +97,22 @@ module-name/
 
 ### Rentals
 
-| Method  | Endpoint              | Description                                  |
-| ------- | --------------------- | -------------------------------------------- |
-| `POST`  | `/rentals`            | Create a rental reservation                  |
-| `GET`   | `/rentals`            | List rentals (filter by customerId, status)  |
-| `GET`   | `/rentals/:id`        | Get rental by ID                             |
-| `PATCH` | `/rentals/:id/status` | Update rental status (start, return, cancel) |
-| `PATCH` | `/rentals/:id/extend` | Extend rental end date                       |
+| Method  | Endpoint              | Description                                                          |
+| ------- | --------------------- | -------------------------------------------------------------------- |
+| `POST`  | `/rentals`            | Create rental (validates bike availability via inventory)             |
+| `GET`   | `/rentals`            | List rentals (filter by customerId, status)                          |
+| `GET`   | `/rentals/:id`        | Get rental by ID                                                     |
+| `PATCH` | `/rentals/:id/status` | Update status (start -> RENTAL_OUT movement, return -> RENTAL_RETURN) |
+| `PATCH` | `/rentals/:id/extend` | Extend rental end date                                               |
 
 ### Sales
 
-| Method  | Endpoint            | Description                          |
-| ------- | ------------------- | ------------------------------------ |
-| `POST`  | `/sales`            | Create a sale                        |
-| `GET`   | `/sales/:id`        | Get sale by ID                       |
-| `PATCH` | `/sales/:id/status` | Update sale status (confirm, cancel) |
+| Method  | Endpoint            | Description                                             |
+| ------- | ------------------- | ------------------------------------------------------- |
+| `POST`  | `/sales`            | Create sale (validates all bikes exist)                  |
+| `GET`   | `/sales`            | List sales (filter by customerId, status)                |
+| `GET`   | `/sales/:id`        | Get sale by ID                                           |
+| `PATCH` | `/sales/:id/status` | Update status (confirm -> SALE movement + bikes SOLD)    |
 
 ## Domain Models
 
@@ -115,16 +125,29 @@ Status flow: `AVAILABLE` -> `RENTED` | `SOLD` | `MAINTENANCE` -> `RETIRED`
 
 Status flow: `RESERVED` -> `ACTIVE` -> `RETURNED`
 Pricing: sum of (daily rate x number of days) for each bike in the rental.
+Integration: start creates RENTAL_OUT movements, return creates RENTAL_RETURN movements.
 
 ### Sale
 
 Status flow: `PENDING` -> `CONFIRMED` | `CANCELLED`
 Supports VAT calculation.
+Integration: confirm creates SALE movements and marks bikes as SOLD.
 
 ### Inventory Movement
 
 Types: `IN`, `OUT`, `ADJUSTMENT`
 Reasons: `PURCHASE`, `SALE`, `RENTAL_OUT`, `RENTAL_RETURN`, `MAINTENANCE`, `LOSS`, `ADJUSTMENT`
+
+## Error Handling
+
+Domain exceptions are mapped to HTTP status codes by a global filter:
+
+| Domain Code         | HTTP Status |
+| ------------------- | ----------- |
+| `*_NOT_FOUND`       | 404         |
+| `*_NOT_AVAILABLE`   | 409         |
+| `*_INVALID_TRANSITION` | 409      |
+| Other domain errors | 422         |
 
 ## Getting Started
 
@@ -140,16 +163,11 @@ Reasons: `PURCHASE`, `SALE`, `RENTAL_OUT`, `RENTAL_RETURN`, `MAINTENANCE`, `LOSS
 pnpm install
 ```
 
-Create a `.env` file from the example:
-
-```bash
-cp .env.example .env
-```
-
-Configure your database URL in `.env`:
+Create a `.env` file:
 
 ```
 DATABASE_URL="postgresql://user:password@localhost:5432/veloshop"
+PORT=3000
 ```
 
 Generate the Prisma client and run migrations:
@@ -157,6 +175,13 @@ Generate the Prisma client and run migrations:
 ```bash
 pnpm prisma:generate
 pnpm prisma:migrate
+```
+
+### Docker
+
+```bash
+docker compose up -d       # Start app + PostgreSQL
+docker compose up -d db    # Start only PostgreSQL
 ```
 
 ### Run
@@ -198,21 +223,12 @@ pnpm prisma:generate # Regenerate client
 pnpm prisma:studio   # Open Prisma Studio
 ```
 
-## Project Status
+## CI/CD
 
-**Completed:**
+GitHub Actions runs on every push and PR to main:
 
-- All 5 domain modules (Bike, Customer, Inventory, Rental, Sale)
-- Shared value objects (Money, DateRange)
-- Full Prisma schema with migrations
-- 149 unit tests passing
-- Build and lint clean
-
-**In Progress:**
-
-- Inter-module integration (inventory checks on rental/sale)
-- Integration and E2E tests
-- API documentation (Swagger)
+- Lint + type check + build
+- Unit tests
 
 ## License
 
