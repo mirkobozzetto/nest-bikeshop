@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { DomainExceptionFilter } from '../domain-exception.filter.js';
 import { DomainException } from '../../../modules/shared/domain/exceptions/domain.exception.js';
+import type { ArgumentsHost } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
 
 function createMockHost(mockJson: ReturnType<typeof vi.fn>) {
@@ -8,18 +9,22 @@ function createMockHost(mockJson: ReturnType<typeof vi.fn>) {
     status: vi.fn().mockReturnThis(),
     json: mockJson,
   };
-  return {
+  const host = {
     switchToHttp: () => ({
       getResponse: () => mockResponse,
       getRequest: () => ({}),
     }),
     getArgs: () => [],
-    getArgByIndex: () => ({}),
-    switchToRpc: () => ({}) as any,
-    switchToWs: () => ({}) as any,
+    getArgByIndex: () => undefined,
+    switchToRpc: () => {
+      throw new Error('Not implemented');
+    },
+    switchToWs: () => {
+      throw new Error('Not implemented');
+    },
     getType: () => 'http' as const,
-    mockResponse,
-  };
+  } as unknown as ArgumentsHost;
+  return { host, mockResponse };
 }
 
 describe('DomainExceptionFilter', () => {
@@ -27,14 +32,11 @@ describe('DomainExceptionFilter', () => {
 
   it('should return 404 for NOT_FOUND codes', () => {
     const mockJson = vi.fn();
-    const host = createMockHost(mockJson);
+    const { host, mockResponse } = createMockHost(mockJson);
 
-    filter.catch(
-      new DomainException('Bike not found', 'BIKE_NOT_FOUND'),
-      host as any,
-    );
+    filter.catch(new DomainException('Bike not found', 'BIKE_NOT_FOUND'), host);
 
-    expect(host.mockResponse.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND);
+    expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.NOT_FOUND);
     expect(mockJson).toHaveBeenCalledWith({
       statusCode: HttpStatus.NOT_FOUND,
       error: 'BIKE_NOT_FOUND',
@@ -44,26 +46,23 @@ describe('DomainExceptionFilter', () => {
 
   it('should return 409 for CONFLICT codes', () => {
     const mockJson = vi.fn();
-    const host = createMockHost(mockJson);
+    const { host, mockResponse } = createMockHost(mockJson);
 
     filter.catch(
       new DomainException('Not available', 'BIKE_NOT_AVAILABLE'),
-      host as any,
+      host,
     );
 
-    expect(host.mockResponse.status).toHaveBeenCalledWith(HttpStatus.CONFLICT);
+    expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.CONFLICT);
   });
 
   it('should return 422 for unknown domain codes', () => {
     const mockJson = vi.fn();
-    const host = createMockHost(mockJson);
+    const { host, mockResponse } = createMockHost(mockJson);
 
-    filter.catch(
-      new DomainException('Some error', 'UNKNOWN_CODE'),
-      host as any,
-    );
+    filter.catch(new DomainException('Some error', 'UNKNOWN_CODE'), host);
 
-    expect(host.mockResponse.status).toHaveBeenCalledWith(
+    expect(mockResponse.status).toHaveBeenCalledWith(
       HttpStatus.UNPROCESSABLE_ENTITY,
     );
   });
