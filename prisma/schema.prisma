@@ -1,11 +1,10 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "../node_modules/.prisma/client"
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 enum BikeType {
@@ -22,6 +21,35 @@ enum BikeStatus {
   SOLD
   MAINTENANCE
   RETIRED
+}
+
+enum MovementType {
+  IN
+  OUT
+  ADJUSTMENT
+}
+
+enum MovementReason {
+  PURCHASE
+  SALE
+  RENTAL_OUT
+  RENTAL_RETURN
+  MAINTENANCE
+  LOSS
+  ADJUSTMENT
+}
+
+enum RentalStatus {
+  RESERVED
+  ACTIVE
+  RETURNED
+  CANCELLED
+}
+
+enum SaleStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
 }
 
 model Bike {
@@ -41,4 +69,98 @@ model Bike {
   @@index([type, status])
   @@index([brand, model])
   @@map("bikes")
+}
+
+model Customer {
+  id        String   @id @default(uuid()) @db.Uuid
+  firstName String   @map("first_name")
+  lastName  String   @map("last_name")
+  email     String   @unique @map("email")
+  phone     String   @map("phone")
+  address   String   @map("address")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  rentals Rental[]
+  sales   Sale[]
+
+  @@index([email])
+  @@index([lastName, firstName])
+  @@map("customers")
+}
+
+model InventoryMovement {
+  id        String         @id @default(uuid()) @db.Uuid
+  bikeId    String         @map("bike_id") @db.Uuid
+  type      MovementType   @map("type")
+  reason    MovementReason @map("reason")
+  quantity  Int            @map("quantity")
+  date      DateTime       @map("date") @db.Timestamptz()
+  notes     String?        @map("notes")
+  createdAt DateTime       @default(now()) @map("created_at") @db.Timestamptz()
+
+  @@index([bikeId])
+  @@index([bikeId, date])
+  @@map("inventory_movements")
+}
+
+model Rental {
+  id         String       @id @default(uuid()) @db.Uuid
+  customerId String       @map("customer_id") @db.Uuid
+  status     RentalStatus @default(RESERVED) @map("status")
+  startDate  DateTime     @map("start_date") @db.Timestamptz()
+  endDate    DateTime     @map("end_date") @db.Timestamptz()
+  totalCents Int          @map("total_cents")
+  createdAt  DateTime     @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt  DateTime     @updatedAt @map("updated_at") @db.Timestamptz()
+
+  customer Customer     @relation(fields: [customerId], references: [id])
+  items    RentalItem[]
+
+  @@index([customerId])
+  @@index([status])
+  @@index([startDate, endDate])
+  @@map("rentals")
+}
+
+model RentalItem {
+  id             String @id @default(uuid()) @db.Uuid
+  rentalId       String @map("rental_id") @db.Uuid
+  bikeId         String @map("bike_id") @db.Uuid
+  dailyRateCents Int    @map("daily_rate_cents")
+
+  rental Rental @relation(fields: [rentalId], references: [id])
+
+  @@index([rentalId])
+  @@index([bikeId])
+  @@map("rental_items")
+}
+
+model Sale {
+  id         String     @id @default(uuid()) @db.Uuid
+  customerId String     @map("customer_id") @db.Uuid
+  status     SaleStatus @default(PENDING) @map("status")
+  totalCents Int        @map("total_cents")
+  createdAt  DateTime   @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt  DateTime   @updatedAt @map("updated_at") @db.Timestamptz()
+
+  customer Customer   @relation(fields: [customerId], references: [id])
+  items    SaleItem[]
+
+  @@index([customerId])
+  @@index([status])
+  @@map("sales")
+}
+
+model SaleItem {
+  id         String @id @default(uuid()) @db.Uuid
+  saleId     String @map("sale_id") @db.Uuid
+  bikeId     String @map("bike_id") @db.Uuid
+  priceCents Int    @map("price_cents")
+
+  sale Sale @relation(fields: [saleId], references: [id])
+
+  @@index([saleId])
+  @@index([bikeId])
+  @@map("sale_items")
 }

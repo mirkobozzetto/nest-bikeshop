@@ -1,6 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { BikeModule } from './modules/bike/infrastructure/bike.module.js';
+import { CustomerModule } from './modules/customer/customer.module.js';
+import { InventoryModule } from './modules/inventory/infrastructure/inventory.module.js';
+import { RentalModule } from './modules/rental/infrastructure/rental.module.js';
+import { SaleModule } from './modules/sale/infrastructure/sale.module.js';
 
 @Module({
   imports: [
@@ -8,6 +12,10 @@ import { BikeModule } from './modules/bike/infrastructure/bike.module.js';
       isGlobal: true,
     }),
     BikeModule,
+    CustomerModule,
+    InventoryModule,
+    RentalModule,
+    SaleModule,
   ],
 })
 export class AppModule {}
