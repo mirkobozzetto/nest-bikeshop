@@ -5,10 +5,17 @@ import { Rental, RentalStatus } from '../../domain/entities/rental.entity.js';
 import { RentalItem } from '../../domain/entities/rental-item.js';
 import { DateRange } from '../../../shared/domain/value-objects/date-range.vo.js';
 import type { RentalRepositoryPort } from '../../domain/ports/rental.repository.port.js';
+import type { InventoryRepositoryPort } from '../../../inventory/domain/ports/inventory.repository.port.js';
+import type { BikeRepositoryPort } from '../../../bike/domain/ports/bike.repository.port.js';
+import { Bike, BikeStatus, BikeType } from '../../../bike/domain/entities/bike.entity.js';
+
+vi.mock('uuid', () => ({ v4: () => 'test-uuid-1234' }));
 
 describe('UpdateRentalStatusHandler', () => {
   let handler: UpdateRentalStatusHandler;
   let mockRepo: RentalRepositoryPort;
+  let mockInventoryRepo: InventoryRepositoryPort;
+  let mockBikeRepo: BikeRepositoryPort;
 
   beforeEach(() => {
     mockRepo = {
@@ -16,7 +23,18 @@ describe('UpdateRentalStatusHandler', () => {
       findById: vi.fn(),
       findAll: vi.fn(),
     };
-    handler = new UpdateRentalStatusHandler(mockRepo);
+    mockInventoryRepo = {
+      saveMovement: vi.fn().mockResolvedValue(undefined),
+      findMovementsByBikeId: vi.fn(),
+      findMovementById: vi.fn(),
+    };
+    mockBikeRepo = {
+      save: vi.fn().mockResolvedValue(undefined),
+      findById: vi.fn(),
+      findAll: vi.fn(),
+      delete: vi.fn(),
+    };
+    handler = new UpdateRentalStatusHandler(mockRepo, mockInventoryRepo, mockBikeRepo);
   });
 
   it('should start a reserved rental', async () => {
@@ -36,13 +54,31 @@ describe('UpdateRentalStatusHandler', () => {
       updatedAt: new Date('2024-02-28'),
     });
 
+    const bike = Bike.reconstitute({
+      id: 'bike-1',
+      name: 'Road Bike',
+      brand: 'Trek',
+      model: 'FX 3',
+      type: BikeType.ROAD,
+      size: 'M',
+      priceCents: 50000,
+      dailyRateCents: 5000,
+      status: BikeStatus.AVAILABLE,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
     vi.mocked(mockRepo.findById).mockResolvedValue(rental);
+    vi.mocked(mockBikeRepo.findById).mockResolvedValue(bike);
 
     const command = new UpdateRentalStatusCommand('rental-1', 'start');
     await handler.execute(command);
 
     expect(rental.status).toBe(RentalStatus.ACTIVE);
     expect(vi.mocked(mockRepo.save)).toHaveBeenCalledWith(rental);
+    expect(vi.mocked(mockInventoryRepo.saveMovement)).toHaveBeenCalledOnce();
+    expect(vi.mocked(mockBikeRepo.save)).toHaveBeenCalledWith(bike);
+    expect(bike.status).toBe(BikeStatus.RENTED);
   });
 
   it('should return an active rental', async () => {
@@ -62,13 +98,31 @@ describe('UpdateRentalStatusHandler', () => {
       updatedAt: new Date('2024-03-01'),
     });
 
+    const bike = Bike.reconstitute({
+      id: 'bike-1',
+      name: 'Road Bike',
+      brand: 'Trek',
+      model: 'FX 3',
+      type: BikeType.ROAD,
+      size: 'M',
+      priceCents: 50000,
+      dailyRateCents: 5000,
+      status: BikeStatus.RENTED,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
     vi.mocked(mockRepo.findById).mockResolvedValue(rental);
+    vi.mocked(mockBikeRepo.findById).mockResolvedValue(bike);
 
     const command = new UpdateRentalStatusCommand('rental-1', 'return');
     await handler.execute(command);
 
     expect(rental.status).toBe(RentalStatus.RETURNED);
     expect(vi.mocked(mockRepo.save)).toHaveBeenCalledWith(rental);
+    expect(vi.mocked(mockInventoryRepo.saveMovement)).toHaveBeenCalledOnce();
+    expect(vi.mocked(mockBikeRepo.save)).toHaveBeenCalledWith(bike);
+    expect(bike.status).toBe(BikeStatus.AVAILABLE);
   });
 
   it('should cancel a reserved rental', async () => {
