@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -6,6 +7,8 @@ import { fetchRentals } from '@/features/rentals/api';
 import { rentalKeys } from '@/features/rentals/keys';
 import { RentalFilters } from '@/features/rentals/components/rental-filters';
 import { RentalsTable } from '@/features/rentals/components/rentals-table';
+
+export const metadata: Metadata = { title: 'Locations' };
 
 export default async function RentalsPage() {
   const queryClient = getQueryClient();

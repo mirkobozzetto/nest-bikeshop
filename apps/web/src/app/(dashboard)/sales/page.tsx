@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
@@ -7,6 +8,8 @@ import { fetchSales } from '@/features/sales/api';
 import { saleKeys } from '@/features/sales/keys';
 import { SaleFilters } from '@/features/sales/components/sale-filters';
 import { SalesTable } from '@/features/sales/components/sales-table';
+
+export const metadata: Metadata = { title: 'Ventes' };
 
 export default async function SalesPage() {
   const queryClient = getQueryClient();

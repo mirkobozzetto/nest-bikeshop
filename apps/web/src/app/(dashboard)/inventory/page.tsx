@@ -1,4 +1,7 @@
+import type { Metadata } from 'next';
 import { InventoryPageClient } from '@/features/inventory/components/inventory-page-client';
+
+export const metadata: Metadata = { title: 'Inventaire' };
 
 export default function InventoryPage() {
   return (

@@ -9,8 +9,14 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'VeloShop',
+  title: {
+    default: 'VeloShop',
+    template: '%s | VeloShop',
+  },
   description: 'Gestion de vente et location de vélos',
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({
