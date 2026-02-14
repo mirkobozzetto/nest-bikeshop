@@ -1,8 +1,10 @@
 node_modules
 dist
+.next
 .env
 *.js.map
 *.d.ts
+!next-env.d.ts
 coverage
 .tsbuildinfo
 .turbo
