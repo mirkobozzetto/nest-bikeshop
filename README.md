@@ -1,235 +1,118 @@
 # Bikeshop Management API
 
-Bike shop management API built with NestJS and Clean Architecture. Handles bike catalog, inventory tracking, rentals, sales, and customer management with full inter-module integration.
-
-## Tech Stack
-
-- **Runtime**: Node.js 22 LTS
-- **Framework**: NestJS 11
-- **Language**: TypeScript 5.9 (strict mode)
-- **Database**: PostgreSQL 16
-- **ORM**: Prisma 7 (with `@prisma/adapter-pg` driver)
-- **Testing**: Vitest 4
-- **Package Manager**: pnpm
+Bike shop management API handling catalog, inventory, rentals, sales and customers. Built with NestJS following strict Clean Architecture and CQRS.
 
 ## Architecture
 
-Strict Clean Architecture with 4 layers. The domain layer is pure TypeScript with zero framework imports.
+The domain layer is pure TypeScript with zero framework imports. Each module follows the same structure:
 
 ```
-src/modules/
-├── bike/           Bike catalog (CRUD, status state machine)
-├── customer/       Customer profiles (register, update)
+apps/api/src/modules/
+├── bike/           Catalog (CRUD + status state machine)
+├── customer/       Customer profiles
 ├── inventory/      Stock movements (in/out/adjustment)
-├── rental/         Bike rentals (reserve, start, return, extend)
-├── sale/           Bike sales (create, confirm, cancel)
-└── shared/         Shared value objects (Money, DateRange)
+├── rental/         Rentals (reserve, start, return, extend)
+├── sale/           Sales (create, confirm, cancel)
+└── shared/         Shared value objects (Money, DateRange, Email…)
 ```
 
-Each module follows the same structure:
-
 ```
-module-name/
-├── domain/
-│   ├── entities/         Pure TS entities with named constructors
-│   ├── value-objects/    Immutable, self-validating
-│   ├── events/           Domain events
-│   ├── ports/            Repository interfaces
-│   ├── services/         Pure computation functions
-│   └── exceptions/       Typed domain exceptions
-├── application/
-│   ├── commands/         Write operations (handler + command DTO)
-│   ├── queries/          Read operations (handler + query DTO)
-│   └── dtos/             Response DTOs with fromDomain() mapping
-└── infrastructure/
-    ├── persistence/
-    │   ├── repositories/ Port implementations (Prisma)
-    │   └── mappers/      Entity <-> Prisma model conversion
-    ├── http/
-    │   ├── controllers/  Thin controllers (< 15 lines per method)
-    │   └── dtos/         Request validation (class-validator)
-    └── module.ts         NestJS module (DI wiring with Symbol tokens)
+module/
+├── domain/           Entities, value objects, events, ports, exceptions
+├── application/      Commands + Queries (CQRS), response DTOs
+└── infrastructure/   Controllers, request DTOs, Prisma repos, mappers
 ```
 
-**Key design decisions:**
+Key design decisions:
 
-- Dependency injection via Symbol tokens, not concrete classes
-- Entities use named constructors (`Bike.create()`, `Rental.start()`)
-- Prices stored as integers in cents (no floating point)
-- All dates use `TIMESTAMPTZ`
-- Domain layer has zero imports from NestJS or Prisma
-- Inter-module integration: rentals and sales verify inventory and update bike status
+- **Symbol token injection** — No coupling to concrete classes
+- **Named constructors** — `Bike.create()`, `Rental.start()`
+- **Prices in cents** — No floating point
+- **Domain events** on every aggregate
+- **State machines** for status transitions (Bike, Rental, Sale)
+- **Inter-module integration** — Rentals and sales manage inventory movements and bike status
 
-## API Endpoints
-
-### Health
-
-| Method | Endpoint  | Description        |
-| ------ | --------- | ------------------ |
-| `GET`  | `/health` | Health check (200) |
+## API
 
 ### Bikes
 
-| Method  | Endpoint            | Description                                               |
-| ------- | ------------------- | --------------------------------------------------------- |
-| `POST`  | `/bikes`            | Create a new bike                                         |
-| `GET`   | `/bikes`            | List bikes (filter by type, status, brand)                |
-| `GET`   | `/bikes/:id`        | Get bike by ID                                            |
-| `PATCH` | `/bikes/:id`        | Update bike details (name, brand, price, etc.)            |
-| `PATCH` | `/bikes/:id/status` | Update bike status (rent, return, sell, maintain, retire) |
+| Method  | Endpoint            | Description                             |
+| ------- | ------------------- | --------------------------------------- |
+| `POST`  | `/bikes`            | Create a bike                           |
+| `GET`   | `/bikes`            | List bikes (filter: type, status, brand)|
+| `GET`   | `/bikes/:id`        | Get bike                                |
+| `PATCH` | `/bikes/:id`        | Update bike                             |
+| `PATCH` | `/bikes/:id/status` | Change status (rent, return, sell…)      |
 
 ### Customers
 
-| Method  | Endpoint         | Description             |
-| ------- | ---------------- | ----------------------- |
-| `POST`  | `/customers`     | Register a new customer |
-| `GET`   | `/customers`     | List customers          |
-| `GET`   | `/customers/:id` | Get customer by ID      |
-| `PATCH` | `/customers/:id` | Update customer details |
+| Method  | Endpoint         | Description      |
+| ------- | ---------------- | ---------------- |
+| `POST`  | `/customers`     | Register         |
+| `GET`   | `/customers`     | List             |
+| `GET`   | `/customers/:id` | Get              |
+| `PATCH` | `/customers/:id` | Update           |
 
 ### Inventory
 
-| Method | Endpoint                       | Description                        |
-| ------ | ------------------------------ | ---------------------------------- |
-| `POST` | `/inventory/movements`         | Record a stock movement            |
-| `GET`  | `/inventory/stock/:bikeId`     | Get current stock level for a bike |
-| `GET`  | `/inventory/movements/:bikeId` | Get movement history for a bike    |
+| Method | Endpoint                       | Description          |
+| ------ | ------------------------------ | -------------------- |
+| `POST` | `/inventory/movements`         | Record movement      |
+| `GET`  | `/inventory/stock/:bikeId`     | Current stock        |
+| `GET`  | `/inventory/movements/:bikeId` | Movement history     |
 
 ### Rentals
 
-| Method  | Endpoint              | Description                                                          |
-| ------- | --------------------- | -------------------------------------------------------------------- |
-| `POST`  | `/rentals`            | Create rental (validates bike availability via inventory)             |
-| `GET`   | `/rentals`            | List rentals (filter by customerId, status)                          |
-| `GET`   | `/rentals/:id`        | Get rental by ID                                                     |
-| `PATCH` | `/rentals/:id/status` | Update status (start -> RENTAL_OUT movement, return -> RENTAL_RETURN) |
-| `PATCH` | `/rentals/:id/extend` | Extend rental end date                                               |
+| Method  | Endpoint              | Description              |
+| ------- | --------------------- | ------------------------ |
+| `POST`  | `/rentals`            | Create rental            |
+| `GET`   | `/rentals`            | List (filter: customer, status) |
+| `GET`   | `/rentals/:id`        | Get rental               |
+| `PATCH` | `/rentals/:id/status` | Start / return / cancel  |
+| `PATCH` | `/rentals/:id/extend` | Extend rental            |
 
 ### Sales
 
-| Method  | Endpoint            | Description                                             |
-| ------- | ------------------- | ------------------------------------------------------- |
-| `POST`  | `/sales`            | Create sale (validates all bikes exist)                  |
-| `GET`   | `/sales`            | List sales (filter by customerId, status)                |
-| `GET`   | `/sales/:id`        | Get sale by ID                                           |
-| `PATCH` | `/sales/:id/status` | Update status (confirm -> SALE movement + bikes SOLD)    |
+| Method  | Endpoint            | Description              |
+| ------- | ------------------- | ------------------------ |
+| `POST`  | `/sales`            | Create sale              |
+| `GET`   | `/sales`            | List (filter: customer, status) |
+| `GET`   | `/sales/:id`        | Get sale                 |
+| `PATCH` | `/sales/:id/status` | Confirm / cancel         |
 
-## Domain Models
+`GET /health` — Returns `{ status: 'ok' }`
 
-### Bike
-
-Types: `ROAD`, `MOUNTAIN`, `CITY`, `ELECTRIC`, `KIDS`
-Status flow: `AVAILABLE` -> `RENTED` | `SOLD` | `MAINTENANCE` -> `RETIRED`
-
-### Rental
-
-Status flow: `RESERVED` -> `ACTIVE` -> `RETURNED`
-Pricing: sum of (daily rate x number of days) for each bike in the rental.
-Integration: start creates RENTAL_OUT movements, return creates RENTAL_RETURN movements.
-
-### Sale
-
-Status flow: `PENDING` -> `CONFIRMED` | `CANCELLED`
-Supports VAT calculation.
-Integration: confirm creates SALE movements and marks bikes as SOLD.
-
-### Inventory Movement
-
-Types: `IN`, `OUT`, `ADJUSTMENT`
-Reasons: `PURCHASE`, `SALE`, `RENTAL_OUT`, `RENTAL_RETURN`, `MAINTENANCE`, `LOSS`, `ADJUSTMENT`
-
-## Error Handling
-
-Domain exceptions are mapped to HTTP status codes by a global filter:
-
-| Domain Code         | HTTP Status |
-| ------------------- | ----------- |
-| `*_NOT_FOUND`       | 404         |
-| `*_NOT_AVAILABLE`   | 409         |
-| `*_INVALID_TRANSITION` | 409      |
-| Other domain errors | 422         |
+Swagger docs available at `/api` when the server is running.
 
 ## Getting Started
-
-### Prerequisites
-
-- Node.js >= 22
-- PostgreSQL 16
-- pnpm
-
-### Setup
 
 ```bash
 pnpm install
 ```
 
-Create a `.env` file:
+Create `.env` in `apps/api/`:
 
 ```
 DATABASE_URL="postgresql://user:password@localhost:5432/bikeshop"
 PORT=3000
 ```
 
-Generate the Prisma client and run migrations:
-
 ```bash
 pnpm prisma:generate
 pnpm prisma:migrate
+pnpm dev
 ```
 
-### Docker
+Or with Docker:
 
 ```bash
-docker compose up -d       # Start app + PostgreSQL
-docker compose up -d db    # Start only PostgreSQL
+docker compose up -d
 ```
 
-### Run
+## Tests
 
 ```bash
-pnpm dev         # Development (watch mode)
-pnpm start:prod  # Production
+pnpm test        # Unit
+pnpm test:int    # Integration
+pnpm test:e2e    # E2E
 ```
-
-### Test
-
-```bash
-pnpm test        # Unit tests
-pnpm test:cov    # Unit tests with coverage
-pnpm test:int    # Integration tests
-pnpm test:e2e    # End-to-end tests
-```
-
-### Lint
-
-```bash
-pnpm lint        # ESLint
-pnpm format      # Prettier
-```
-
-## Database
-
-The Prisma schema defines 7 models with proper PostgreSQL conventions:
-
-- UUIDs for all primary keys
-- `TIMESTAMPTZ` for all date fields
-- Prices in cents (`INTEGER`)
-- `snake_case` column and table names
-- Indexes on all foreign keys and common query patterns
-
-```bash
-pnpm prisma:migrate  # Run migrations
-pnpm prisma:generate # Regenerate client
-pnpm prisma:studio   # Open Prisma Studio
-```
-
-## CI/CD
-
-GitHub Actions runs on every push and PR to main:
-
-- Lint + type check + build
-- Unit tests
-
-## License
-
-UNLICENSED
