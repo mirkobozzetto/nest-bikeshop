@@ -1,18 +1,18 @@
-'use client'
+'use client';
 
-import { useTheme } from 'next-themes'
-import { useEffect, useState } from 'react'
+import { useTheme } from 'next-themes';
+import { useEffect, useState } from 'react';
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
   if (!mounted) {
-    return <button className="h-9 w-9" aria-label="Changer le thème" />
+    return <button className="h-9 w-9" aria-label="Changer le thème" />;
   }
 
   return (
@@ -59,5 +59,5 @@ export function ThemeToggle() {
         </svg>
       )}
     </button>
-  )
+  );
 }

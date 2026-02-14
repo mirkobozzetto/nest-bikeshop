@@ -1,4 +1,4 @@
-import { ThemeToggle } from '@/components/theme-toggle'
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export default function Home() {
   return (
@@ -12,5 +12,5 @@ export default function Home() {
         construction.
       </p>
     </div>
-  )
+  );
 }
