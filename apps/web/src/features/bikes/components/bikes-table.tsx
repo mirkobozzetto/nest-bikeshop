@@ -22,6 +22,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useUpdateBikeStatus } from '../hooks';
+import { EmptyState } from '@/components/empty-state';
+import { Bike as BikeIcon } from 'lucide-react';
 import type { BikeStatusAction } from '@/types';
 
 const typeLabels: Record<string, string> = {
@@ -49,9 +51,13 @@ export function BikesTable() {
 
   if (!bikes?.length) {
     return (
-      <p className="text-muted-foreground py-8 text-center">
-        Aucun vélo trouvé.
-      </p>
+      <EmptyState
+        icon={BikeIcon}
+        title="Aucun vélo"
+        description="Commencez par ajouter votre premier vélo au catalogue."
+        actionLabel="Ajouter un vélo"
+        actionHref="/bikes/new"
+      />
     );
   }
 
