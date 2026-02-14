@@ -9,7 +9,9 @@ export function fetchMovements(bikeId: string): Promise<InventoryMovement[]> {
   return apiFetch<InventoryMovement[]>(`/inventory/movements/${bikeId}`);
 }
 
-export function recordMovement(input: RecordMovementInput): Promise<{ id: string }> {
+export function recordMovement(
+  input: RecordMovementInput,
+): Promise<{ id: string }> {
   return apiFetch<{ id: string }>('/inventory/movements', {
     method: 'POST',
     body: JSON.stringify(input),

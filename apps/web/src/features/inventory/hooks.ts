@@ -29,8 +29,12 @@ export function useRecordMovement() {
   return useMutation({
     mutationFn: (input: RecordMovementInput) => recordMovement(input),
     onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({ queryKey: inventoryKeys.stock(variables.bikeId) });
-      queryClient.invalidateQueries({ queryKey: inventoryKeys.movements(variables.bikeId) });
+      void queryClient.invalidateQueries({
+        queryKey: inventoryKeys.stock(variables.bikeId),
+      });
+      void queryClient.invalidateQueries({
+        queryKey: inventoryKeys.movements(variables.bikeId),
+      });
     },
   });
 }

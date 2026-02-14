@@ -35,7 +35,9 @@ export function BikeDetail({ id }: { id: string }) {
   const { mutate: updateStatus } = useUpdateBikeStatus(id);
 
   if (isLoading || !bike) {
-    return <p className="text-muted-foreground py-8 text-center">Chargement...</p>;
+    return (
+      <p className="text-muted-foreground py-8 text-center">Chargement...</p>
+    );
   }
 
   return (
@@ -49,7 +51,10 @@ export function BikeDetail({ id }: { id: string }) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               {statusActions.map((sa) => (
-                <DropdownMenuItem key={sa.action} onClick={() => updateStatus(sa.action)}>
+                <DropdownMenuItem
+                  key={sa.action}
+                  onClick={() => updateStatus(sa.action)}
+                >
                   {sa.label}
                 </DropdownMenuItem>
               ))}
@@ -73,7 +78,9 @@ export function BikeDetail({ id }: { id: string }) {
           </div>
           <div>
             <dt className="text-muted-foreground text-sm">Type</dt>
-            <dd className="font-medium">{typeLabels[bike.type] ?? bike.type}</dd>
+            <dd className="font-medium">
+              {typeLabels[bike.type] ?? bike.type}
+            </dd>
           </div>
           <div>
             <dt className="text-muted-foreground text-sm">Taille</dt>
@@ -89,7 +96,9 @@ export function BikeDetail({ id }: { id: string }) {
           </div>
           <div>
             <dt className="text-muted-foreground text-sm">Statut</dt>
-            <dd><BikeStatusBadge status={bike.status} /></dd>
+            <dd>
+              <BikeStatusBadge status={bike.status} />
+            </dd>
           </div>
           <div>
             <dt className="text-muted-foreground text-sm">Créé le</dt>

@@ -36,7 +36,10 @@ const MOVEMENT_REASONS: { value: MovementReason; label: string }[] = [
   { value: 'ADJUSTMENT', label: 'Ajustement' },
 ];
 
-export function MovementForm({ bikeId: initialBikeId, onSuccess }: MovementFormProps) {
+export function MovementForm({
+  bikeId: initialBikeId,
+  onSuccess,
+}: MovementFormProps) {
   const [bikeId, setBikeId] = useState(initialBikeId ?? '');
   const [type, setType] = useState<MovementType>('IN');
   const [reason, setReason] = useState<MovementReason>('PURCHASE');
@@ -46,7 +49,7 @@ export function MovementForm({ bikeId: initialBikeId, onSuccess }: MovementFormP
 
   const mutation = useRecordMovement();
 
-  function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     mutation.mutate(
       {
@@ -98,7 +101,10 @@ export function MovementForm({ bikeId: initialBikeId, onSuccess }: MovementFormP
 
       <div className="space-y-2">
         <Label htmlFor="reason">Raison</Label>
-        <Select value={reason} onValueChange={(v) => setReason(v as MovementReason)}>
+        <Select
+          value={reason}
+          onValueChange={(v) => setReason(v as MovementReason)}
+        >
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>

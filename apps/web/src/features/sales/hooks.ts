@@ -26,7 +26,7 @@ export function useCreateSale() {
   return useMutation({
     mutationFn: createSale,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: saleKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: saleKeys.lists() });
     },
   });
 }
@@ -36,8 +36,8 @@ export function useUpdateSaleStatus(id: string) {
   return useMutation({
     mutationFn: (action: SaleStatusAction) => updateSaleStatus(id, action),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: saleKeys.detail(id) });
-      queryClient.invalidateQueries({ queryKey: saleKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: saleKeys.detail(id) });
+      void queryClient.invalidateQueries({ queryKey: saleKeys.lists() });
     },
   });
 }

@@ -1,12 +1,11 @@
 import Link from 'next/link';
+import { Bike, Users, CalendarDays, ShoppingCart, Package } from 'lucide-react';
 import {
-  Bike,
-  Users,
-  CalendarDays,
-  ShoppingCart,
-  Package,
-} from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from '@/components/ui/card';
 
 const modules = [
   {

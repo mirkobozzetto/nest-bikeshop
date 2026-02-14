@@ -1,5 +1,10 @@
 import { apiFetch } from '@/lib/api';
-import type { Bike, CreateBikeInput, UpdateBikeInput, BikeStatusAction } from '@/types';
+import type {
+  Bike,
+  CreateBikeInput,
+  UpdateBikeInput,
+  BikeStatusAction,
+} from '@/types';
 
 export interface BikesFilters {
   type?: string;
@@ -27,14 +32,20 @@ export function createBike(input: CreateBikeInput): Promise<{ id: string }> {
   });
 }
 
-export function updateBike(id: string, input: UpdateBikeInput): Promise<{ success: boolean }> {
+export function updateBike(
+  id: string,
+  input: UpdateBikeInput,
+): Promise<{ success: boolean }> {
   return apiFetch<{ success: boolean }>(`/bikes/${id}`, {
     method: 'PATCH',
     body: JSON.stringify(input),
   });
 }
 
-export function updateBikeStatus(id: string, action: BikeStatusAction): Promise<{ success: boolean }> {
+export function updateBikeStatus(
+  id: string,
+  action: BikeStatusAction,
+): Promise<{ success: boolean }> {
   return apiFetch<{ success: boolean }>(`/bikes/${id}/status`, {
     method: 'PATCH',
     body: JSON.stringify({ action }),

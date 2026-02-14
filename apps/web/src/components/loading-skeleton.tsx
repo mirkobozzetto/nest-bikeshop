@@ -1,6 +1,12 @@
 import { Skeleton } from '@/components/ui/skeleton';
 
-export function TableSkeleton({ rows = 5, cols = 4 }: { rows?: number; cols?: number }) {
+export function TableSkeleton({
+  rows = 5,
+  cols = 4,
+}: {
+  rows?: number;
+  cols?: number;
+}) {
   return (
     <div className="space-y-3">
       <div className="flex gap-4">

@@ -36,12 +36,16 @@ export function BikeForm({ bike }: BikeFormProps) {
   const [model, setModel] = useState(bike?.model ?? '');
   const [type, setType] = useState<BikeType>(bike?.type ?? 'CITY');
   const [size, setSize] = useState(bike?.size ?? '');
-  const [priceEur, setPriceEur] = useState(bike ? (bike.priceCents / 100).toString() : '');
-  const [dailyRateEur, setDailyRateEur] = useState(bike ? (bike.dailyRateCents / 100).toString() : '');
+  const [priceEur, setPriceEur] = useState(
+    bike ? (bike.priceCents / 100).toString() : '',
+  );
+  const [dailyRateEur, setDailyRateEur] = useState(
+    bike ? (bike.dailyRateCents / 100).toString() : '',
+  );
 
   const isPending = createMutation.isPending || updateMutation.isPending;
 
-  function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     const input = {
       name,
@@ -64,17 +68,32 @@ export function BikeForm({ bike }: BikeFormProps) {
     <form onSubmit={handleSubmit} className="max-w-lg space-y-4">
       <div className="space-y-2">
         <Label htmlFor="name">Nom</Label>
-        <Input id="name" value={name} onChange={(e) => setName(e.target.value)} required />
+        <Input
+          id="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+        />
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="brand">Marque</Label>
-        <Input id="brand" value={brand} onChange={(e) => setBrand(e.target.value)} required />
+        <Input
+          id="brand"
+          value={brand}
+          onChange={(e) => setBrand(e.target.value)}
+          required
+        />
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="model">Modèle</Label>
-        <Input id="model" value={model} onChange={(e) => setModel(e.target.value)} required />
+        <Input
+          id="model"
+          value={model}
+          onChange={(e) => setModel(e.target.value)}
+          required
+        />
       </div>
 
       <div className="space-y-2">
@@ -95,7 +114,12 @@ export function BikeForm({ bike }: BikeFormProps) {
 
       <div className="space-y-2">
         <Label htmlFor="size">Taille</Label>
-        <Input id="size" value={size} onChange={(e) => setSize(e.target.value)} required />
+        <Input
+          id="size"
+          value={size}
+          onChange={(e) => setSize(e.target.value)}
+          required
+        />
       </div>
 
       <div className="space-y-2">

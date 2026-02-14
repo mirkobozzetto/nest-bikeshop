@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic';
-
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { getQueryClient } from '@/lib/query';
 import { fetchBike } from '@/features/bikes/api';

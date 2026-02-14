@@ -1,8 +1,18 @@
 export type BikeType = 'ROAD' | 'MOUNTAIN' | 'CITY' | 'ELECTRIC' | 'KIDS';
 
-export type BikeStatus = 'AVAILABLE' | 'RENTED' | 'SOLD' | 'MAINTENANCE' | 'RETIRED';
+export type BikeStatus =
+  | 'AVAILABLE'
+  | 'RENTED'
+  | 'SOLD'
+  | 'MAINTENANCE'
+  | 'RETIRED';
 
-export type BikeStatusAction = 'rent' | 'return' | 'sell' | 'maintenance' | 'retire';
+export type BikeStatusAction =
+  | 'rent'
+  | 'return'
+  | 'sell'
+  | 'maintenance'
+  | 'retire';
 
 export interface Bike {
   id: string;

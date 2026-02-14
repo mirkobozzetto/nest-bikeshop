@@ -22,7 +22,9 @@ export function CustomerDetail({ id }: CustomerDetailProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{customer.firstName} {customer.lastName}</CardTitle>
+        <CardTitle>
+          {customer.firstName} {customer.lastName}
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-2">
         <div>

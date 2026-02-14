@@ -42,11 +42,17 @@ export function BikesTable() {
   const { data: bikes, isLoading } = useBikes(filters);
 
   if (isLoading) {
-    return <p className="text-muted-foreground py-8 text-center">Chargement...</p>;
+    return (
+      <p className="text-muted-foreground py-8 text-center">Chargement...</p>
+    );
   }
 
   if (!bikes?.length) {
-    return <p className="text-muted-foreground py-8 text-center">Aucun vélo trouvé.</p>;
+    return (
+      <p className="text-muted-foreground py-8 text-center">
+        Aucun vélo trouvé.
+      </p>
+    );
   }
 
   return (
@@ -72,7 +78,20 @@ export function BikesTable() {
   );
 }
 
-function BikeRow({ bike }: { bike: { id: string; name: string; brand: string; type: string; size: string; priceCents: number; dailyRateCents: number; status: 'AVAILABLE' | 'RENTED' | 'SOLD' | 'MAINTENANCE' | 'RETIRED' } }) {
+function BikeRow({
+  bike,
+}: {
+  bike: {
+    id: string;
+    name: string;
+    brand: string;
+    type: string;
+    size: string;
+    priceCents: number;
+    dailyRateCents: number;
+    status: 'AVAILABLE' | 'RENTED' | 'SOLD' | 'MAINTENANCE' | 'RETIRED';
+  };
+}) {
   const { mutate: updateStatus } = useUpdateBikeStatus(bike.id);
 
   const statusActions: { action: BikeStatusAction; label: string }[] = [
@@ -86,7 +105,10 @@ function BikeRow({ bike }: { bike: { id: string; name: string; brand: string; ty
   return (
     <TableRow>
       <TableCell>
-        <Link href={`/bikes/${bike.id}`} className="font-medium hover:underline">
+        <Link
+          href={`/bikes/${bike.id}`}
+          className="font-medium hover:underline"
+        >
           {bike.name}
         </Link>
       </TableCell>
@@ -110,7 +132,10 @@ function BikeRow({ bike }: { bike: { id: string; name: string; brand: string; ty
               <Link href={`/bikes/${bike.id}`}>Voir</Link>
             </DropdownMenuItem>
             {statusActions.map((sa) => (
-              <DropdownMenuItem key={sa.action} onClick={() => updateStatus(sa.action)}>
+              <DropdownMenuItem
+                key={sa.action}
+                onClick={() => updateStatus(sa.action)}
+              >
                 {sa.label}
               </DropdownMenuItem>
             ))}

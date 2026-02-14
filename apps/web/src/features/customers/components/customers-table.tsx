@@ -19,7 +19,9 @@ export function CustomersTable() {
   }
 
   if (!customers?.length) {
-    return <p className="text-muted-foreground">Aucun client pour le moment.</p>;
+    return (
+      <p className="text-muted-foreground">Aucun client pour le moment.</p>
+    );
   }
 
   return (

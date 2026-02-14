@@ -21,11 +21,17 @@ export function RentalsTable() {
   const { data: rentals, isLoading } = useRentals(filters);
 
   if (isLoading) {
-    return <p className="text-muted-foreground py-8 text-center">Chargement...</p>;
+    return (
+      <p className="text-muted-foreground py-8 text-center">Chargement...</p>
+    );
   }
 
   if (!rentals?.length) {
-    return <p className="text-muted-foreground py-8 text-center">Aucune location trouvée.</p>;
+    return (
+      <p className="text-muted-foreground py-8 text-center">
+        Aucune location trouvée.
+      </p>
+    );
   }
 
   return (

@@ -22,11 +22,7 @@ function getBreadcrumbs(pathname: string) {
   }));
 }
 
-export function Header({
-  onMenuClick,
-}: {
-  onMenuClick: () => void;
-}) {
+export function Header({ onMenuClick }: { onMenuClick: () => void }) {
   const pathname = usePathname();
   const breadcrumbs = getBreadcrumbs(pathname);
 

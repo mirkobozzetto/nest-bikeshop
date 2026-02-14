@@ -23,7 +23,9 @@ export function MovementsTable({ bikeId }: MovementsTableProps) {
   }
 
   if (!movements?.length) {
-    return <p className="text-muted-foreground">Aucun mouvement pour ce vélo.</p>;
+    return (
+      <p className="text-muted-foreground">Aucun mouvement pour ce vélo.</p>
+    );
   }
 
   return (

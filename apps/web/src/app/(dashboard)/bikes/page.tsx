@@ -1,10 +1,8 @@
-export const dynamic = 'force-dynamic';
-
 import Link from 'next/link';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { getQueryClient } from '@/lib/query';
 import { fetchBikes } from '@/features/bikes/api';
-import { bikeKeys } from '@/features/bikes/hooks';
+import { bikeKeys } from '@/features/bikes/keys';
 import { BikesTable } from '@/features/bikes/components/bikes-table';
 import { BikeFilters } from '@/features/bikes/components/bike-filters';
 import { Button } from '@/components/ui/button';

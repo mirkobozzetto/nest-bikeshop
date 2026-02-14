@@ -23,7 +23,9 @@ export function SaleFilters() {
     <div className="flex items-center gap-4">
       <Select
         value={status ?? 'all'}
-        onValueChange={(value) => setStatus(value === 'all' ? null : value)}
+        onValueChange={(value) =>
+          void setStatus(value === 'all' ? null : value)
+        }
       >
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Filtrer par statut" />

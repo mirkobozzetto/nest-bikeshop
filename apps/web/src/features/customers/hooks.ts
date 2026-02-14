@@ -2,7 +2,12 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { fetchCustomers, fetchCustomer, createCustomer, updateCustomer } from './api';
+import {
+  fetchCustomers,
+  fetchCustomer,
+  createCustomer,
+  updateCustomer,
+} from './api';
 import type { CreateCustomerInput, UpdateCustomerInput } from '@/types';
 import { customerKeys } from './keys';
 
@@ -29,7 +34,7 @@ export function useCreateCustomer() {
   return useMutation({
     mutationFn: (input: CreateCustomerInput) => createCustomer(input),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: customerKeys.all });
+      void queryClient.invalidateQueries({ queryKey: customerKeys.all });
       router.push('/customers');
     },
   });
@@ -41,7 +46,7 @@ export function useUpdateCustomer(id: string) {
   return useMutation({
     mutationFn: (input: UpdateCustomerInput) => updateCustomer(id, input),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: customerKeys.all });
+      void queryClient.invalidateQueries({ queryKey: customerKeys.all });
     },
   });
 }

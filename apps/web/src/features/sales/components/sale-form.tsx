@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,7 +9,6 @@ import type { SaleItem } from '@/types';
 import { useCreateSale } from '../hooks';
 
 export function SaleForm() {
-  const router = useRouter();
   const createSale = useCreateSale();
   const [customerId, setCustomerId] = useState('');
   const [items, setItems] = useState<SaleItem[]>([
@@ -36,10 +34,9 @@ export function SaleForm() {
     setItems(updated);
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
-    await createSale.mutateAsync({ customerId, items });
-    router.push('/sales');
+    void createSale.mutateAsync({ customerId, items });
   }
 
   return (

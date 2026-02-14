@@ -17,10 +17,7 @@ import { rentalKeys } from './keys';
 
 export { rentalKeys } from './keys';
 
-export function useRentals(filters?: {
-  customerId?: string;
-  status?: string;
-}) {
+export function useRentals(filters?: { customerId?: string; status?: string }) {
   return useQuery({
     queryKey: rentalKeys.list(filters),
     queryFn: () => fetchRentals(filters),
@@ -40,7 +37,7 @@ export function useCreateRental() {
   return useMutation({
     mutationFn: (input: CreateRentalInput) => createRental(input),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: rentalKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: rentalKeys.lists() });
     },
   });
 }
@@ -48,11 +45,10 @@ export function useCreateRental() {
 export function useUpdateRentalStatus(id: string) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (action: RentalStatusAction) =>
-      updateRentalStatus(id, action),
+    mutationFn: (action: RentalStatusAction) => updateRentalStatus(id, action),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: rentalKeys.detail(id) });
-      queryClient.invalidateQueries({ queryKey: rentalKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: rentalKeys.detail(id) });
+      void queryClient.invalidateQueries({ queryKey: rentalKeys.lists() });
     },
   });
 }
@@ -62,8 +58,8 @@ export function useExtendRental(id: string) {
   return useMutation({
     mutationFn: (input: ExtendRentalInput) => extendRental(id, input),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: rentalKeys.detail(id) });
-      queryClient.invalidateQueries({ queryKey: rentalKeys.lists() });
+      void queryClient.invalidateQueries({ queryKey: rentalKeys.detail(id) });
+      void queryClient.invalidateQueries({ queryKey: rentalKeys.lists() });
     },
   });
 }

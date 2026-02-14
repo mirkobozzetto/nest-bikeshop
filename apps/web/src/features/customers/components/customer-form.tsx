@@ -27,7 +27,7 @@ export function CustomerForm({ customer }: CustomerFormProps) {
   const isEdit = !!customer;
   const mutation = isEdit ? updateMutation : createMutation;
 
-  function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     mutation.mutate({ firstName, lastName, email, phone, address });
   }

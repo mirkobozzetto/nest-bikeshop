@@ -1,5 +1,9 @@
 import { apiFetch } from '@/lib/api';
-import type { Customer, CreateCustomerInput, UpdateCustomerInput } from '@/types';
+import type {
+  Customer,
+  CreateCustomerInput,
+  UpdateCustomerInput,
+} from '@/types';
 
 export function fetchCustomers(params?: { limit?: number; offset?: number }) {
   const searchParams = new URLSearchParams();

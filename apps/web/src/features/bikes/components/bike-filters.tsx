@@ -33,7 +33,7 @@ export function BikeFilters() {
     <div className="flex gap-4">
       <Select
         value={type ?? ''}
-        onValueChange={(v) => setType(v === 'ALL' ? null : v)}
+        onValueChange={(v) => void setType(v === 'ALL' ? null : v)}
       >
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Type" />
@@ -50,7 +50,7 @@ export function BikeFilters() {
 
       <Select
         value={status ?? ''}
-        onValueChange={(v) => setStatus(v === 'ALL' ? null : v)}
+        onValueChange={(v) => void setStatus(v === 'ALL' ? null : v)}
       >
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Statut" />

@@ -23,7 +23,7 @@ export function RentalFilters() {
     <div className="flex items-center gap-4">
       <Select
         value={status ?? 'all'}
-        onValueChange={(v) => setStatus(v === 'all' ? null : v)}
+        onValueChange={(v) => void setStatus(v === 'all' ? null : v)}
       >
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Statut" />

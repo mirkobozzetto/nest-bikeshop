@@ -2,9 +2,19 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { fetchBikes, fetchBike, createBike, updateBike, updateBikeStatus } from './api';
+import {
+  fetchBikes,
+  fetchBike,
+  createBike,
+  updateBike,
+  updateBikeStatus,
+} from './api';
 import type { BikesFilters } from './api';
-import type { CreateBikeInput, UpdateBikeInput, BikeStatusAction } from '@/types';
+import type {
+  CreateBikeInput,
+  UpdateBikeInput,
+  BikeStatusAction,
+} from '@/types';
 import { bikeKeys } from './keys';
 
 export { bikeKeys } from './keys';
@@ -29,7 +39,7 @@ export function useCreateBike() {
   return useMutation({
     mutationFn: (input: CreateBikeInput) => createBike(input),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: bikeKeys.all });
+      void queryClient.invalidateQueries({ queryKey: bikeKeys.all });
       router.push('/bikes');
       router.refresh();
     },
@@ -41,8 +51,8 @@ export function useUpdateBike(id: string) {
   return useMutation({
     mutationFn: (input: UpdateBikeInput) => updateBike(id, input),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: bikeKeys.all });
-      queryClient.invalidateQueries({ queryKey: bikeKeys.detail(id) });
+      void queryClient.invalidateQueries({ queryKey: bikeKeys.all });
+      void queryClient.invalidateQueries({ queryKey: bikeKeys.detail(id) });
     },
   });
 }
@@ -52,8 +62,8 @@ export function useUpdateBikeStatus(id: string) {
   return useMutation({
     mutationFn: (action: BikeStatusAction) => updateBikeStatus(id, action),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: bikeKeys.all });
-      queryClient.invalidateQueries({ queryKey: bikeKeys.detail(id) });
+      void queryClient.invalidateQueries({ queryKey: bikeKeys.all });
+      void queryClient.invalidateQueries({ queryKey: bikeKeys.detail(id) });
     },
   });
 }

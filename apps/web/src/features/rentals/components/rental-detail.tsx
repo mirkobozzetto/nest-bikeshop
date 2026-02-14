@@ -10,7 +10,10 @@ import type { RentalStatus, RentalStatusAction } from '@/types';
 import { useRental, useUpdateRentalStatus, useExtendRental } from '../hooks';
 import { RentalStatusBadge } from './rental-status-badge';
 
-const statusActions: Record<RentalStatus, { action: RentalStatusAction; label: string }[]> = {
+const statusActions: Record<
+  RentalStatus,
+  { action: RentalStatusAction; label: string }[]
+> = {
   RESERVED: [
     { action: 'start', label: 'Démarrer' },
     { action: 'cancel', label: 'Annuler' },
@@ -30,27 +33,30 @@ export function RentalDetail({ id }: { id: string }) {
   const [newEndDate, setNewEndDate] = useState('');
 
   if (isLoading) {
-    return <p className="text-muted-foreground py-8 text-center">Chargement...</p>;
+    return (
+      <p className="text-muted-foreground py-8 text-center">Chargement...</p>
+    );
   }
 
   if (!rental) {
-    return <p className="text-muted-foreground py-8 text-center">Location introuvable.</p>;
+    return (
+      <p className="text-muted-foreground py-8 text-center">
+        Location introuvable.
+      </p>
+    );
   }
 
   const actions = statusActions[rental.status];
 
-  async function handleExtend(e: React.FormEvent) {
+  function handleExtend(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
-    await extend.mutateAsync({ newEndDate });
-    setNewEndDate('');
+    void extend.mutateAsync({ newEndDate }).then(() => setNewEndDate(''));
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">
-          Location
-        </h1>
+        <h1 className="text-3xl font-bold tracking-tight">Location</h1>
         <Button variant="outline" asChild>
           <Link href="/rentals">Retour</Link>
         </Button>
@@ -75,7 +81,9 @@ export function RentalDetail({ id }: { id: string }) {
         </div>
         <div>
           <p className="text-muted-foreground text-sm">Total</p>
-          <p className="text-lg font-semibold">{formatCents(rental.totalCents)}</p>
+          <p className="text-lg font-semibold">
+            {formatCents(rental.totalCents)}
+          </p>
         </div>
         <div>
           <p className="text-muted-foreground text-sm">Vélos</p>
@@ -88,7 +96,10 @@ export function RentalDetail({ id }: { id: string }) {
           <h2 className="text-lg font-semibold">Vélos loués</h2>
           <ul className="space-y-1">
             {rental.items.map((item, i) => (
-              <li key={i} className="flex items-center justify-between rounded border p-2 text-sm">
+              <li
+                key={i}
+                className="flex items-center justify-between rounded border p-2 text-sm"
+              >
                 <span className="font-mono">{item.bikeId.slice(0, 8)}...</span>
                 <span>{formatCents(item.dailyRateCents)}/jour</span>
               </li>

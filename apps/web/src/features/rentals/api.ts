@@ -6,9 +6,10 @@ import type {
   RentalStatusAction,
 } from '@/types';
 
-export function fetchRentals(
-  filters?: { customerId?: string; status?: string },
-): Promise<Rental[]> {
+export function fetchRentals(filters?: {
+  customerId?: string;
+  status?: string;
+}): Promise<Rental[]> {
   const params = new URLSearchParams();
   if (filters?.customerId) params.set('customerId', filters.customerId);
   if (filters?.status) params.set('status', filters.status);

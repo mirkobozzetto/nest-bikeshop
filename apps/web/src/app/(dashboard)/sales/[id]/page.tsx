@@ -70,7 +70,9 @@ export default function SaleDetailPage({
             <p className="font-medium">{formatDateTime(sale.createdAt)}</p>
           </div>
           <div>
-            <p className="text-muted-foreground text-sm">Dernière mise à jour</p>
+            <p className="text-muted-foreground text-sm">
+              Dernière mise à jour
+            </p>
             <p className="font-medium">{formatDateTime(sale.updatedAt)}</p>
           </div>
         </CardContent>

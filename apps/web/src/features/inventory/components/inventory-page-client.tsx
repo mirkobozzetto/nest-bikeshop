@@ -18,7 +18,7 @@ export function InventoryPageClient() {
         <Input
           placeholder="Entrer l'ID du vélo..."
           value={bikeId}
-          onChange={(e) => setBikeId(e.target.value)}
+          onChange={(e) => void setBikeId(e.target.value)}
           className="max-w-sm"
         />
       </div>
@@ -34,7 +34,10 @@ export function InventoryPageClient() {
               </Button>
             </div>
             {showForm && (
-              <MovementForm bikeId={bikeId} onSuccess={() => setShowForm(false)} />
+              <MovementForm
+                bikeId={bikeId}
+                onSuccess={() => setShowForm(false)}
+              />
             )}
             <MovementsTable bikeId={bikeId} />
           </div>

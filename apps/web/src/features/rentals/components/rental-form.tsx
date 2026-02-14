@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,7 +8,6 @@ import type { RentalItem } from '@/types';
 import { useCreateRental } from '../hooks';
 
 export function RentalForm() {
-  const router = useRouter();
   const createRental = useCreateRental();
 
   const [customerId, setCustomerId] = useState('');
@@ -25,8 +23,7 @@ export function RentalForm() {
         i === index
           ? {
               ...item,
-              [field]:
-                field === 'dailyRateCents' ? Number(value) : value,
+              [field]: field === 'dailyRateCents' ? Number(value) : value,
             }
           : item,
       ),
@@ -41,15 +38,14 @@ export function RentalForm() {
     setItems((prev) => prev.filter((_, i) => i !== index));
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
-    await createRental.mutateAsync({
+    void createRental.mutateAsync({
       customerId,
       items,
       startDate,
       endDate,
     });
-    router.push('/rentals');
   }
 
   return (
