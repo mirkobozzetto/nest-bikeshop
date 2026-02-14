@@ -2,20 +2,22 @@ services:
   db:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: veloshop
-      POSTGRES_PASSWORD: veloshop
-      POSTGRES_DB: veloshop
+      POSTGRES_USER: bikeshop
+      POSTGRES_PASSWORD: bikeshop
+      POSTGRES_DB: bikeshop
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
 
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
     ports:
       - "3000:3000"
     environment:
-      DATABASE_URL: postgresql://veloshop:veloshop@db:5432/veloshop
+      DATABASE_URL: postgresql://bikeshop:bikeshop@db:5432/bikeshop
       PORT: 3000
     depends_on:
       - db

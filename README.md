@@ -166,7 +166,7 @@ pnpm install
 Create a `.env` file:
 
 ```
-DATABASE_URL="postgresql://user:password@localhost:5432/veloshop"
+DATABASE_URL="postgresql://user:password@localhost:5432/bikeshop"
 PORT=3000
 ```
 
