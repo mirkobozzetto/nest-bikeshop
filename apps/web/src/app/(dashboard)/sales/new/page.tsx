@@ -1,4 +1,7 @@
+import type { Metadata } from 'next';
 import { SaleForm } from '@/features/sales/components/sale-form';
+
+export const metadata: Metadata = { title: 'Nouvelle vente' };
 
 export default function NewSalePage() {
   return (

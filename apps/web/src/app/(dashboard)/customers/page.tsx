@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { getQueryClient } from '@/lib/query';
@@ -5,6 +6,8 @@ import { fetchCustomers } from '@/features/customers/api';
 import { customerKeys } from '@/features/customers/keys';
 import { CustomersTable } from '@/features/customers/components/customers-table';
 import { Button } from '@/components/ui/button';
+
+export const metadata: Metadata = { title: 'Clients' };
 
 export default async function CustomersPage() {
   const queryClient = getQueryClient();

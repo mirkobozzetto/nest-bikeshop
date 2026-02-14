@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Bike, Users, CalendarDays, ShoppingCart, Package } from 'lucide-react';
 import {
@@ -6,6 +7,8 @@ import {
   CardTitle,
   CardDescription,
 } from '@/components/ui/card';
+
+export const metadata: Metadata = { title: 'Tableau de bord' };
 
 const modules = [
   {

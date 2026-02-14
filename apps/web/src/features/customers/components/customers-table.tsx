@@ -1,7 +1,9 @@
 'use client';
 
 import Link from 'next/link';
+import { Users } from 'lucide-react';
 import { useCustomers } from '../hooks';
+import { EmptyState } from '@/components/empty-state';
 import {
   Table,
   TableBody,
@@ -20,7 +22,13 @@ export function CustomersTable() {
 
   if (!customers?.length) {
     return (
-      <p className="text-muted-foreground">Aucun client pour le moment.</p>
+      <EmptyState
+        icon={Users}
+        title="Aucun client"
+        description="Ajoutez votre premier client pour commencer."
+        actionLabel="Ajouter un client"
+        actionHref="/customers/new"
+      />
     );
   }
 

@@ -10,7 +10,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { CalendarDays } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { EmptyState } from '@/components/empty-state';
 import { formatCents, formatDate } from '@/lib/format';
 import { useRentals } from '../hooks';
 import { RentalStatusBadge } from './rental-status-badge';
@@ -28,9 +30,13 @@ export function RentalsTable() {
 
   if (!rentals?.length) {
     return (
-      <p className="text-muted-foreground py-8 text-center">
-        Aucune location trouvée.
-      </p>
+      <EmptyState
+        icon={CalendarDays}
+        title="Aucune location"
+        description="Créez votre première location pour commencer."
+        actionLabel="Nouvelle location"
+        actionHref="/rentals/new"
+      />
     );
   }
 

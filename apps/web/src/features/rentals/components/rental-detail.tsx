@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { formatCents, formatDate } from '@/lib/format';
+import { ConfirmDialog, useConfirmDialog } from '@/components/confirm-dialog';
 import type { RentalStatus, RentalStatusAction } from '@/types';
 import { useRental, useUpdateRentalStatus, useExtendRental } from '../hooks';
 import { RentalStatusBadge } from './rental-status-badge';
@@ -31,6 +32,15 @@ export function RentalDetail({ id }: { id: string }) {
   const updateStatus = useUpdateRentalStatus(id);
   const extend = useExtendRental(id);
   const [newEndDate, setNewEndDate] = useState('');
+  const dialog = useConfirmDialog();
+
+  function handleStatusAction(action: RentalStatusAction) {
+    if (action === 'cancel') {
+      dialog.confirm(() => updateStatus.mutate(action));
+    } else {
+      updateStatus.mutate(action);
+    }
+  }
 
   if (isLoading) {
     return (
@@ -114,7 +124,7 @@ export function RentalDetail({ id }: { id: string }) {
             <Button
               key={action}
               variant={action === 'cancel' ? 'destructive' : 'default'}
-              onClick={() => updateStatus.mutate(action)}
+              onClick={() => handleStatusAction(action)}
               disabled={updateStatus.isPending}
             >
               {label}
@@ -140,6 +150,16 @@ export function RentalDetail({ id }: { id: string }) {
           </Button>
         </form>
       )}
+
+      <ConfirmDialog
+        open={dialog.open}
+        onOpenChange={dialog.onOpenChange}
+        onConfirm={dialog.onConfirm}
+        title="Annuler la location"
+        description="Cette action est irréversible. La location sera définitivement annulée."
+        confirmLabel="Annuler la location"
+        isPending={updateStatus.isPending}
+      />
     </div>
   );
 }

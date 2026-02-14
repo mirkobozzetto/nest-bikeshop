@@ -3,6 +3,7 @@
 import { useState, type ReactNode } from 'react';
 import { Sidebar, MobileSidebar } from '@/components/sidebar';
 import { Header } from '@/components/header';
+import { CommandPalette } from '@/components/command-palette';
 
 export function DashboardShell({ children }: { children: ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -17,6 +18,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         <Header onMenuClick={() => setMobileOpen(true)} />
         <main className="flex-1 overflow-y-auto p-6">{children}</main>
       </div>
+      <CommandPalette />
     </div>
   );
 }

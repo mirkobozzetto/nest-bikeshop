@@ -2,6 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import {
   fetchBikes,
   fetchBike,
@@ -39,9 +40,13 @@ export function useCreateBike() {
   return useMutation({
     mutationFn: (input: CreateBikeInput) => createBike(input),
     onSuccess: () => {
+      toast.success('Vélo créé avec succès');
       void queryClient.invalidateQueries({ queryKey: bikeKeys.all });
       router.push('/bikes');
       router.refresh();
+    },
+    onError: () => {
+      toast.error('Erreur lors de la création du vélo');
     },
   });
 }
@@ -51,8 +56,12 @@ export function useUpdateBike(id: string) {
   return useMutation({
     mutationFn: (input: UpdateBikeInput) => updateBike(id, input),
     onSuccess: () => {
+      toast.success('Vélo modifié avec succès');
       void queryClient.invalidateQueries({ queryKey: bikeKeys.all });
       void queryClient.invalidateQueries({ queryKey: bikeKeys.detail(id) });
+    },
+    onError: () => {
+      toast.error('Erreur lors de la modification du vélo');
     },
   });
 }
@@ -62,8 +71,12 @@ export function useUpdateBikeStatus(id: string) {
   return useMutation({
     mutationFn: (action: BikeStatusAction) => updateBikeStatus(id, action),
     onSuccess: () => {
+      toast.success('Statut du vélo mis à jour');
       void queryClient.invalidateQueries({ queryKey: bikeKeys.all });
       void queryClient.invalidateQueries({ queryKey: bikeKeys.detail(id) });
+    },
+    onError: () => {
+      toast.error('Erreur lors du changement de statut');
     },
   });
 }

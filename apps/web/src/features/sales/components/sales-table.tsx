@@ -2,8 +2,9 @@
 
 import Link from 'next/link';
 import { useQueryState } from 'nuqs';
-import { Eye } from 'lucide-react';
+import { Eye, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { EmptyState } from '@/components/empty-state';
 import {
   Table,
   TableBody,
@@ -34,9 +35,13 @@ export function SalesTable() {
 
   if (!sales?.length) {
     return (
-      <p className="text-muted-foreground py-8 text-center">
-        Aucune vente trouvée.
-      </p>
+      <EmptyState
+        icon={ShoppingCart}
+        title="Aucune vente"
+        description="Enregistrez votre première vente pour commencer."
+        actionLabel="Nouvelle vente"
+        actionHref="/sales/new"
+      />
     );
   }
 

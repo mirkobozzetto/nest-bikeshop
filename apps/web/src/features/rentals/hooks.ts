@@ -1,5 +1,6 @@
 'use client';
 
+import { toast } from 'sonner';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type {
   CreateRentalInput,
@@ -37,7 +38,11 @@ export function useCreateRental() {
   return useMutation({
     mutationFn: (input: CreateRentalInput) => createRental(input),
     onSuccess: () => {
+      toast.success('Location créée avec succès');
       void queryClient.invalidateQueries({ queryKey: rentalKeys.lists() });
+    },
+    onError: () => {
+      toast.error('Erreur lors de la création de la location');
     },
   });
 }
@@ -47,8 +52,12 @@ export function useUpdateRentalStatus(id: string) {
   return useMutation({
     mutationFn: (action: RentalStatusAction) => updateRentalStatus(id, action),
     onSuccess: () => {
+      toast.success('Statut de la location mis à jour');
       void queryClient.invalidateQueries({ queryKey: rentalKeys.detail(id) });
       void queryClient.invalidateQueries({ queryKey: rentalKeys.lists() });
+    },
+    onError: () => {
+      toast.error('Erreur lors du changement de statut');
     },
   });
 }
@@ -58,8 +67,12 @@ export function useExtendRental(id: string) {
   return useMutation({
     mutationFn: (input: ExtendRentalInput) => extendRental(id, input),
     onSuccess: () => {
+      toast.success('Location prolongée avec succès');
       void queryClient.invalidateQueries({ queryKey: rentalKeys.detail(id) });
       void queryClient.invalidateQueries({ queryKey: rentalKeys.lists() });
+    },
+    onError: () => {
+      toast.error('Erreur lors de la prolongation de la location');
     },
   });
 }
