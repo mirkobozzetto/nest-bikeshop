@@ -40,10 +40,11 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
         size="icon"
         className="md:hidden"
         onClick={onMenuClick}
+        aria-label="Ouvrir le menu"
       >
         <Menu className="h-5 w-5" />
       </Button>
-      <nav className="flex items-center gap-1 text-sm text-muted-foreground">
+      <nav aria-label="Fil d'Ariane" className="flex items-center gap-1 text-sm text-muted-foreground">
         <Link href="/" className="hover:text-foreground transition-colors">
           Accueil
         </Link>

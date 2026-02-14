@@ -31,7 +31,7 @@ export function Sidebar() {
           VeloShop
         </Link>
       </div>
-      <nav className="flex-1 space-y-1 p-2">
+      <nav aria-label="Navigation principale" className="flex-1 space-y-1 p-2">
         {navigation.map((item) => {
           const isActive =
             item.href === '/'
@@ -41,6 +41,7 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
+              aria-current={isActive ? 'page' : undefined}
               className={cn(
                 'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
                 isActive
@@ -84,7 +85,7 @@ export function MobileSidebar({
             VeloShop
           </Link>
         </div>
-        <nav className="flex-1 space-y-1 p-2">
+        <nav aria-label="Navigation principale" className="flex-1 space-y-1 p-2">
           {navigation.map((item) => {
             const isActive =
               item.href === '/'
@@ -94,6 +95,7 @@ export function MobileSidebar({
               <Link
                 key={item.href}
                 href={item.href}
+                aria-current={isActive ? 'page' : undefined}
                 onClick={() => onOpenChange(false)}
                 className={cn(
                   'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
