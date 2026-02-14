@@ -1,6 +1,9 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { RentalForm } from '@/features/rentals/components/rental-form';
+
+export const metadata: Metadata = { title: 'Nouvelle location' };
 
 export default function NewRentalPage() {
   return (

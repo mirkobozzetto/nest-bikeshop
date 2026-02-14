@@ -2,6 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import {
   fetchCustomers,
   fetchCustomer,
@@ -34,8 +35,12 @@ export function useCreateCustomer() {
   return useMutation({
     mutationFn: (input: CreateCustomerInput) => createCustomer(input),
     onSuccess: () => {
+      toast.success('Client créé avec succès');
       void queryClient.invalidateQueries({ queryKey: customerKeys.all });
       router.push('/customers');
+    },
+    onError: () => {
+      toast.error('Erreur lors de la création du client');
     },
   });
 }
@@ -46,7 +51,11 @@ export function useUpdateCustomer(id: string) {
   return useMutation({
     mutationFn: (input: UpdateCustomerInput) => updateCustomer(id, input),
     onSuccess: () => {
+      toast.success('Client modifié avec succès');
       void queryClient.invalidateQueries({ queryKey: customerKeys.all });
+    },
+    onError: () => {
+      toast.error('Erreur lors de la modification du client');
     },
   });
 }

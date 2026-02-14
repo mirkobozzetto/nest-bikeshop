@@ -1,4 +1,7 @@
+import type { Metadata } from 'next';
 import { CustomerForm } from '@/features/customers/components/customer-form';
+
+export const metadata: Metadata = { title: 'Nouveau client' };
 
 export default function NewCustomerPage() {
   return (

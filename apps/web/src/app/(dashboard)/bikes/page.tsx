@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { getQueryClient } from '@/lib/query';
@@ -6,6 +7,8 @@ import { bikeKeys } from '@/features/bikes/keys';
 import { BikesTable } from '@/features/bikes/components/bikes-table';
 import { BikeFilters } from '@/features/bikes/components/bike-filters';
 import { Button } from '@/components/ui/button';
+
+export const metadata: Metadata = { title: 'Vélos' };
 
 interface Props {
   searchParams: Promise<{ type?: string; status?: string; brand?: string }>;

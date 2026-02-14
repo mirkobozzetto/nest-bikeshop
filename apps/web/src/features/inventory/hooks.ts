@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchStock, fetchMovements, recordMovement } from './api';
 import type { RecordMovementInput } from '@/types';
 import { inventoryKeys } from './keys';
+import { toast } from 'sonner';
 
 export { inventoryKeys } from './keys';
 
@@ -29,12 +30,16 @@ export function useRecordMovement() {
   return useMutation({
     mutationFn: (input: RecordMovementInput) => recordMovement(input),
     onSuccess: (_data, variables) => {
+      toast.success('Mouvement de stock enregistré');
       void queryClient.invalidateQueries({
         queryKey: inventoryKeys.stock(variables.bikeId),
       });
       void queryClient.invalidateQueries({
         queryKey: inventoryKeys.movements(variables.bikeId),
       });
+    },
+    onError: () => {
+      toast.error("Erreur lors de l'enregistrement du mouvement");
     },
   });
 }
