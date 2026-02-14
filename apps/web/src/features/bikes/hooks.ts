@@ -5,12 +5,9 @@ import { useRouter } from 'next/navigation';
 import { fetchBikes, fetchBike, createBike, updateBike, updateBikeStatus } from './api';
 import type { BikesFilters } from './api';
 import type { CreateBikeInput, UpdateBikeInput, BikeStatusAction } from '@/types';
+import { bikeKeys } from './keys';
 
-export const bikeKeys = {
-  all: ['bikes'] as const,
-  list: (filters?: BikesFilters) => [...bikeKeys.all, 'list', filters] as const,
-  detail: (id: string) => [...bikeKeys.all, 'detail', id] as const,
-};
+export { bikeKeys } from './keys';
 
 export function useBikes(filters?: BikesFilters) {
   return useQuery({
