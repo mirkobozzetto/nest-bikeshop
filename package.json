@@ -1,0 +1,17 @@
+{
+  "name": "veloshop",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "test": "turbo test",
+    "format": "prettier --write \"**/*.ts\""
+  },
+  "devDependencies": {
+    "prettier": "^3.8.0",
+    "turbo": "^2.8.7"
+  }
+}

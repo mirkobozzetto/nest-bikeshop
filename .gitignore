@@ -1,11 +1,12 @@
-dist
 node_modules
+dist
 .env
 *.js.map
 *.d.ts
 coverage
 .tsbuildinfo
-src/generated
+.turbo
+**/generated
 .claude
 claude-code-veloshop-kit.md
 CLAUDE.md
