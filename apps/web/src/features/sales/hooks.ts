@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { SaleStatusAction } from '@/types';
 import { fetchSales, fetchSale, createSale, updateSaleStatus } from './api';
 import { saleKeys } from './keys';
+import { toast } from 'sonner';
 
 export { saleKeys } from './keys';
 
@@ -26,7 +27,11 @@ export function useCreateSale() {
   return useMutation({
     mutationFn: createSale,
     onSuccess: () => {
+      toast.success('Vente créée avec succès');
       void queryClient.invalidateQueries({ queryKey: saleKeys.lists() });
+    },
+    onError: () => {
+      toast.error('Erreur lors de la création de la vente');
     },
   });
 }
@@ -36,8 +41,12 @@ export function useUpdateSaleStatus(id: string) {
   return useMutation({
     mutationFn: (action: SaleStatusAction) => updateSaleStatus(id, action),
     onSuccess: () => {
+      toast.success('Statut de la vente mis à jour');
       void queryClient.invalidateQueries({ queryKey: saleKeys.detail(id) });
       void queryClient.invalidateQueries({ queryKey: saleKeys.lists() });
+    },
+    onError: () => {
+      toast.error('Erreur lors du changement de statut');
     },
   });
 }
