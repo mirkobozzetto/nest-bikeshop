@@ -6,7 +6,6 @@ dist
 coverage
 .tsbuildinfo
 .turbo
-**/generated
 .claude
 claude-code-veloshop-kit.md
 CLAUDE.md
