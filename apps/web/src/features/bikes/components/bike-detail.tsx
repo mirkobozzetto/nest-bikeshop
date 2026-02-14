@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Card } from '@/components/ui/card';
+import { ConfirmDialog, useConfirmDialog } from '@/components/confirm-dialog';
 import type { BikeStatusAction } from '@/types';
 
 const typeLabels: Record<string, string> = {
@@ -30,9 +31,20 @@ const statusActions: { action: BikeStatusAction; label: string }[] = [
   { action: 'retire', label: 'Retirer' },
 ];
 
+const destructiveActions = new Set<BikeStatusAction>(['sell', 'retire']);
+
 export function BikeDetail({ id }: { id: string }) {
   const { data: bike, isLoading } = useBike(id);
-  const { mutate: updateStatus } = useUpdateBikeStatus(id);
+  const statusMutation = useUpdateBikeStatus(id);
+  const dialog = useConfirmDialog();
+
+  function handleStatusAction(action: BikeStatusAction) {
+    if (destructiveActions.has(action)) {
+      dialog.confirm(() => statusMutation.mutate(action));
+    } else {
+      statusMutation.mutate(action);
+    }
+  }
 
   if (isLoading || !bike) {
     return (
@@ -53,7 +65,7 @@ export function BikeDetail({ id }: { id: string }) {
               {statusActions.map((sa) => (
                 <DropdownMenuItem
                   key={sa.action}
-                  onClick={() => updateStatus(sa.action)}
+                  onClick={() => handleStatusAction(sa.action)}
                 >
                   {sa.label}
                 </DropdownMenuItem>
@@ -106,6 +118,16 @@ export function BikeDetail({ id }: { id: string }) {
           </div>
         </dl>
       </Card>
+
+      <ConfirmDialog
+        open={dialog.open}
+        onOpenChange={dialog.onOpenChange}
+        onConfirm={dialog.onConfirm}
+        title="Confirmer l'action"
+        description="Cette action va changer le statut du vélo de manière irréversible. Continuer ?"
+        confirmLabel="Confirmer"
+        isPending={statusMutation.isPending}
+      />
     </div>
   );
 }
