@@ -49,11 +49,7 @@ export function ConfirmDialog({
           >
             {cancelLabel}
           </Button>
-          <Button
-            variant={variant}
-            onClick={onConfirm}
-            disabled={isPending}
-          >
+          <Button variant={variant} onClick={onConfirm} disabled={isPending}>
             {isPending ? 'En cours...' : confirmLabel}
           </Button>
         </DialogFooter>
@@ -82,5 +78,10 @@ export function useConfirmDialog() {
     if (!value) setPendingAction(null);
   }, []);
 
-  return { open, onOpenChange: handleOpenChange, onConfirm: handleConfirm, confirm };
+  return {
+    open,
+    onOpenChange: handleOpenChange,
+    onConfirm: handleConfirm,
+    confirm,
+  };
 }

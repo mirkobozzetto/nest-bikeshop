@@ -57,7 +57,11 @@ export function CommandPalette() {
   }
 
   return (
-    <CommandDialog open={open} onOpenChange={setOpen} title="Palette de commandes">
+    <CommandDialog
+      open={open}
+      onOpenChange={setOpen}
+      title="Palette de commandes"
+    >
       <CommandInput placeholder="Rechercher une page ou une action..." />
       <CommandList>
         <CommandEmpty>Aucun résultat.</CommandEmpty>
@@ -71,7 +75,10 @@ export function CommandPalette() {
         </CommandGroup>
         <CommandGroup heading="Actions">
           {actions.map((action) => (
-            <CommandItem key={action.href} onSelect={() => navigate(action.href)}>
+            <CommandItem
+              key={action.href}
+              onSelect={() => navigate(action.href)}
+            >
               <action.icon className="mr-2 h-4 w-4" />
               {action.name}
             </CommandItem>

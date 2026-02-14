@@ -39,7 +39,7 @@ export function useRecordMovement() {
       });
     },
     onError: () => {
-      toast.error('Erreur lors de l\'enregistrement du mouvement');
+      toast.error("Erreur lors de l'enregistrement du mouvement");
     },
   });
 }

@@ -15,7 +15,8 @@ const routeLabels: Record<string, string> = {
   new: 'Nouveau',
 };
 
-const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 function getBreadcrumbs(pathname: string) {
   const segments = pathname.split('/').filter(Boolean);
@@ -44,7 +45,10 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
       >
         <Menu className="h-5 w-5" />
       </Button>
-      <nav aria-label="Fil d'Ariane" className="flex items-center gap-1 text-sm text-muted-foreground">
+      <nav
+        aria-label="Fil d'Ariane"
+        className="flex items-center gap-1 text-sm text-muted-foreground"
+      >
         <Link href="/" className="hover:text-foreground transition-colors">
           Accueil
         </Link>
@@ -54,7 +58,10 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
             {i === breadcrumbs.length - 1 ? (
               <span className="text-foreground font-medium">{crumb.label}</span>
             ) : (
-              <Link href={crumb.href} className="hover:text-foreground transition-colors">
+              <Link
+                href={crumb.href}
+                className="hover:text-foreground transition-colors"
+              >
                 {crumb.label}
               </Link>
             )}

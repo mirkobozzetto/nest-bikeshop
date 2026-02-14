@@ -66,7 +66,10 @@ function CommandList({
   return (
     <CommandPrimitive.List
       data-slot="command-list"
-      className={cn('max-h-[300px] overflow-y-auto overflow-x-hidden', className)}
+      className={cn(
+        'max-h-[300px] overflow-y-auto overflow-x-hidden',
+        className,
+      )}
       {...props}
     />
   );
@@ -136,7 +139,10 @@ function CommandShortcut({
   return (
     <span
       data-slot="command-shortcut"
-      className={cn('text-muted-foreground ml-auto text-xs tracking-widest', className)}
+      className={cn(
+        'text-muted-foreground ml-auto text-xs tracking-widest',
+        className,
+      )}
       {...props}
     />
   );

@@ -85,7 +85,10 @@ export function MobileSidebar({
             VeloShop
           </Link>
         </div>
-        <nav aria-label="Navigation principale" className="flex-1 space-y-1 p-2">
+        <nav
+          aria-label="Navigation principale"
+          className="flex-1 space-y-1 p-2"
+        >
           {navigation.map((item) => {
             const isActive =
               item.href === '/'
