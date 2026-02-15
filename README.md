@@ -1,88 +1,54 @@
-# Bikeshop Management API
+# Bikeshop
 
-Bike shop management API handling catalog, inventory, rentals, sales and customers. Built with NestJS following strict Clean Architecture and CQRS.
+Bike shop management app — catalog, inventory, rentals, sales and customers.
+
+Monorepo with a **NestJS** API and a **Next.js** dashboard.
+
+## Stack
+
+| Layer    | Tech                                        |
+| -------- | ------------------------------------------- |
+| Backend  | NestJS 11, Prisma 7, PostgreSQL 16          |
+| Frontend | Next.js 16, React 19, Tailwind 4, shadcn/ui |
+| Monorepo | pnpm workspaces, Turborepo                  |
+| Tests    | Vitest (219 unit tests)                     |
+| CI       | GitHub Actions (lint, build, tests)         |
 
 ## Architecture
 
-The domain layer is pure TypeScript with zero framework imports. Each module follows the same structure:
+Clean Architecture with pure TypeScript domain — zero framework imports in the domain layer.
 
 ```
-apps/api/src/modules/
-├── bike/           Catalog (CRUD + status state machine)
-├── customer/       Customer profiles
-├── inventory/      Stock movements (in/out/adjustment)
-├── rental/         Rentals (reserve, start, return, extend)
-├── sale/           Sales (create, confirm, cancel)
-└── shared/         Shared value objects (Money, DateRange, Email…)
+apps/
+├── api/             NestJS backend (port 3000)
+│   └── src/modules/
+│       ├── bike/        Catalog + status state machine
+│       ├── customer/    Customer profiles
+│       ├── inventory/   Stock movements (in/out/adjustment)
+│       ├── rental/      Rentals (reserve, start, return, extend)
+│       ├── sale/        Sales (create, confirm, cancel)
+│       └── shared/      Value objects (Money, DateRange, Email…)
+│
+└── web/             Next.js dashboard (port 3001)
+    └── src/
+        ├── features/    Feature-based modules (bikes, customers, rentals, sales, inventory)
+        ├── components/  Shared UI (sidebar, header, command palette, toasts…)
+        └── app/         App Router with Partial Prerendering
 ```
 
-```
-module/
-├── domain/           Entities, value objects, events, ports, exceptions
-├── application/      Commands + Queries (CQRS), response DTOs
-└── infrastructure/   Controllers, request DTOs, Prisma repos, mappers
-```
-
-Key design decisions:
-
-- **Symbol token injection** — No coupling to concrete classes
-- **Named constructors** — `Bike.create()`, `Rental.start()`
-- **Prices in cents** — No floating point
-- **Domain events** on every aggregate
-- **State machines** for status transitions (Bike, Rental, Sale)
-- **Inter-module integration** — Rentals and sales manage inventory movements and bike status
+Each backend module follows: `domain/ → application/ → infrastructure/`
 
 ## API
 
-### Bikes
+| Module    | Endpoints                                                                                                         |
+| --------- | ----------------------------------------------------------------------------------------------------------------- |
+| Bikes     | `POST /bikes` · `GET /bikes` · `GET /bikes/:id` · `PATCH /bikes/:id` · `PATCH /bikes/:id/status`                  |
+| Customers | `POST /customers` · `GET /customers` · `GET /customers/:id` · `PATCH /customers/:id`                              |
+| Inventory | `POST /inventory/movements` · `GET /inventory/stock/:bikeId` · `GET /inventory/movements/:bikeId`                 |
+| Rentals   | `POST /rentals` · `GET /rentals` · `GET /rentals/:id` · `PATCH /rentals/:id/status` · `PATCH /rentals/:id/extend` |
+| Sales     | `POST /sales` · `GET /sales` · `GET /sales/:id` · `PATCH /sales/:id/status`                                       |
 
-| Method  | Endpoint            | Description                             |
-| ------- | ------------------- | --------------------------------------- |
-| `POST`  | `/bikes`            | Create a bike                           |
-| `GET`   | `/bikes`            | List bikes (filter: type, status, brand)|
-| `GET`   | `/bikes/:id`        | Get bike                                |
-| `PATCH` | `/bikes/:id`        | Update bike                             |
-| `PATCH` | `/bikes/:id/status` | Change status (rent, return, sell…)      |
-
-### Customers
-
-| Method  | Endpoint         | Description      |
-| ------- | ---------------- | ---------------- |
-| `POST`  | `/customers`     | Register         |
-| `GET`   | `/customers`     | List             |
-| `GET`   | `/customers/:id` | Get              |
-| `PATCH` | `/customers/:id` | Update           |
-
-### Inventory
-
-| Method | Endpoint                       | Description          |
-| ------ | ------------------------------ | -------------------- |
-| `POST` | `/inventory/movements`         | Record movement      |
-| `GET`  | `/inventory/stock/:bikeId`     | Current stock        |
-| `GET`  | `/inventory/movements/:bikeId` | Movement history     |
-
-### Rentals
-
-| Method  | Endpoint              | Description              |
-| ------- | --------------------- | ------------------------ |
-| `POST`  | `/rentals`            | Create rental            |
-| `GET`   | `/rentals`            | List (filter: customer, status) |
-| `GET`   | `/rentals/:id`        | Get rental               |
-| `PATCH` | `/rentals/:id/status` | Start / return / cancel  |
-| `PATCH` | `/rentals/:id/extend` | Extend rental            |
-
-### Sales
-
-| Method  | Endpoint            | Description              |
-| ------- | ------------------- | ------------------------ |
-| `POST`  | `/sales`            | Create sale              |
-| `GET`   | `/sales`            | List (filter: customer, status) |
-| `GET`   | `/sales/:id`        | Get sale                 |
-| `PATCH` | `/sales/:id/status` | Confirm / cancel         |
-
-`GET /health` — Returns `{ status: 'ok' }`
-
-Swagger docs available at `/api` when the server is running.
+`GET /health` — Health check. Swagger at `/api` when running.
 
 ## Getting Started
 
@@ -90,7 +56,7 @@ Swagger docs available at `/api` when the server is running.
 pnpm install
 ```
 
-Create `.env` in `apps/api/`:
+Create `apps/api/.env`:
 
 ```
 DATABASE_URL="postgresql://user:password@localhost:5432/bikeshop"
@@ -98,21 +64,17 @@ PORT=3000
 ```
 
 ```bash
+docker compose up -d     # Start PostgreSQL
 pnpm prisma:generate
 pnpm prisma:migrate
-pnpm dev
+pnpm dev                 # API on :3000, Web on :3001
 ```
 
-Or with Docker:
+## Commands
 
 ```bash
-docker compose up -d
-```
-
-## Tests
-
-```bash
-pnpm test        # Unit
-pnpm test:int    # Integration
-pnpm test:e2e    # E2E
+pnpm dev          # Dev (both apps, watch mode)
+pnpm build        # Build all
+pnpm test         # Unit tests
+pnpm lint         # ESLint
 ```
