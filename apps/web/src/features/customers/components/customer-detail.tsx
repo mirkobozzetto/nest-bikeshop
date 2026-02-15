@@ -2,7 +2,9 @@
 
 import { useCustomer } from '../hooks';
 import { formatDate } from '@/lib/format';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
+import { DetailGrid, DetailItem } from '@/components/detail-grid';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface CustomerDetailProps {
   id: string;
@@ -12,36 +14,43 @@ export function CustomerDetail({ id }: CustomerDetailProps) {
   const { data: customer, isLoading } = useCustomer(id);
 
   if (isLoading) {
-    return <p>Chargement...</p>;
+    return (
+      <Card>
+        <CardContent className="pt-6 space-y-4">
+          <Skeleton className="h-8 w-64" />
+          <div className="space-y-3">
+            {[...Array(4)].map((_, i) => (
+              <Skeleton key={i} className="h-10 w-full" />
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    );
   }
 
   if (!customer) {
-    return <p className="text-muted-foreground">Client introuvable.</p>;
+    return (
+      <Card>
+        <CardContent className="pt-6">
+          <p className="text-muted-foreground">Client introuvable.</p>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>
-          {customer.firstName} {customer.lastName}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-2">
-        <div>
-          <span className="font-medium">Email : </span>
-          {customer.email}
-        </div>
-        <div>
-          <span className="font-medium">Téléphone : </span>
-          {customer.phone}
-        </div>
-        <div>
-          <span className="font-medium">Adresse : </span>
-          {customer.address}
-        </div>
-        <div>
-          <span className="font-medium">Créé le : </span>
-          {formatDate(customer.createdAt)}
+      <CardContent className="pt-6">
+        <div className="space-y-6">
+          <h2 className="text-2xl font-bold">
+            {customer.firstName} {customer.lastName}
+          </h2>
+          <DetailGrid>
+            <DetailItem label="Email" value={customer.email} />
+            <DetailItem label="Téléphone" value={customer.phone} />
+            <DetailItem label="Adresse" value={customer.address} />
+            <DetailItem label="Créé le" value={formatDate(customer.createdAt)} />
+          </DetailGrid>
         </div>
       </CardContent>
     </Card>

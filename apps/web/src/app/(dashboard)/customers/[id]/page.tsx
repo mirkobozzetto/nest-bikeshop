@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { ArrowLeft } from 'lucide-react';
 import { getQueryClient } from '@/lib/query';
 import { fetchCustomer } from '@/features/customers/api';
 import { customerKeys } from '@/features/customers/hooks';
@@ -22,7 +23,12 @@ export default async function CustomerPage({ params }: CustomerPageProps) {
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Fiche client</h1>
+          <Button asChild variant="ghost" size="sm">
+            <Link href="/customers">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Retour
+            </Link>
+          </Button>
           <Button asChild variant="outline">
             <Link href={`/customers/${id}/edit`}>Modifier</Link>
           </Button>
