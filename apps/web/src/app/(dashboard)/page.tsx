@@ -1,68 +1,56 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Bike, Users, CalendarDays, ShoppingCart, Package } from 'lucide-react';
 import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from '@/components/ui/card';
+  Bike,
+  Users,
+  CalendarDays,
+  ShoppingCart,
+  ArrowRight,
+} from 'lucide-react';
+import { PageHeader } from '@/components/page-header';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
 export const metadata: Metadata = { title: 'Tableau de bord' };
 
-const modules = [
-  {
-    name: 'Vélos',
-    description: 'Gérer le catalogue de vélos',
-    href: '/bikes',
-    icon: Bike,
-  },
-  {
-    name: 'Clients',
-    description: 'Gérer les fiches clients',
-    href: '/customers',
-    icon: Users,
-  },
-  {
-    name: 'Locations',
-    description: 'Gérer les locations en cours',
-    href: '/rentals',
-    icon: CalendarDays,
-  },
-  {
-    name: 'Ventes',
-    description: 'Gérer les ventes',
-    href: '/sales',
-    icon: ShoppingCart,
-  },
-  {
-    name: 'Inventaire',
-    description: 'Suivre les mouvements de stock',
-    href: '/inventory',
-    icon: Package,
-  },
+const stats = [
+  { label: 'Vélos', value: '—', icon: Bike, href: '/bikes' },
+  { label: 'Clients', value: '—', icon: Users, href: '/customers' },
+  { label: 'Locations', value: '—', icon: CalendarDays, href: '/rentals' },
+  { label: 'Ventes', value: '—', icon: ShoppingCart, href: '/sales' },
 ];
 
 export default function DashboardPage() {
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold">Tableau de bord</h1>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {modules.map((mod) => (
-          <Link key={mod.href} href={mod.href}>
-            <Card className="transition-colors hover:bg-muted/50">
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <mod.icon className="h-6 w-6 text-primary" />
-                  <div>
-                    <CardTitle>{mod.name}</CardTitle>
-                    <CardDescription>{mod.description}</CardDescription>
+      <PageHeader
+        title="Tableau de bord"
+        description="Vue d'ensemble de votre activité"
+      />
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {stats.map((stat) => {
+          const Icon = stat.icon;
+          return (
+            <Link key={stat.label} href={stat.href}>
+              <Card className="group transition-shadow hover:shadow-md">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    {stat.label}
+                  </CardTitle>
+                  <div className="rounded-lg bg-muted p-2">
+                    <Icon className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
                   </div>
-                </div>
-              </CardHeader>
-            </Card>
-          </Link>
-        ))}
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold">{stat.value}</div>
+                  <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground group-hover:text-primary transition-colors">
+                    Voir tout <ArrowRight className="h-3 w-3" />
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );

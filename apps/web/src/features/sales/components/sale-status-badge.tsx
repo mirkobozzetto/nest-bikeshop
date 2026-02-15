@@ -4,15 +4,18 @@ import type { SaleStatus } from '@/types';
 const statusConfig: Record<SaleStatus, { label: string; className: string }> = {
   PENDING: {
     label: 'En attente',
-    className: 'bg-yellow-100 text-yellow-800 hover:bg-yellow-100',
+    className:
+      'border-yellow-200 bg-yellow-50 text-yellow-700 dark:border-yellow-800 dark:bg-yellow-950 dark:text-yellow-300',
   },
   CONFIRMED: {
     label: 'Confirmée',
-    className: 'bg-green-100 text-green-800 hover:bg-green-100',
+    className:
+      'border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-300',
   },
   CANCELLED: {
     label: 'Annulée',
-    className: 'bg-red-100 text-red-800 hover:bg-red-100',
+    className:
+      'border-red-200 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300',
   },
 };
 

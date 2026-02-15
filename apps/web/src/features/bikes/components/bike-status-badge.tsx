@@ -5,25 +5,27 @@ const statusConfig: Record<BikeStatus, { label: string; className: string }> = {
   AVAILABLE: {
     label: 'Disponible',
     className:
-      'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+      'border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-300',
   },
   RENTED: {
     label: 'En location',
-    className: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
+    className:
+      'border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-300',
   },
   SOLD: {
     label: 'Vendu',
     className:
-      'bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-300',
+      'border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300',
   },
   MAINTENANCE: {
     label: 'Maintenance',
     className:
-      'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+      'border-yellow-200 bg-yellow-50 text-yellow-700 dark:border-yellow-800 dark:bg-yellow-950 dark:text-yellow-300',
   },
   RETIRED: {
     label: 'Retiré',
-    className: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
+    className:
+      'border-red-200 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300',
   },
 };
 

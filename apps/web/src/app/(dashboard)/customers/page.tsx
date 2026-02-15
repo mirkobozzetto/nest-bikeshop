@@ -5,6 +5,7 @@ import { getQueryClient } from '@/lib/query';
 import { fetchCustomers } from '@/features/customers/api';
 import { customerKeys } from '@/features/customers/keys';
 import { CustomersTable } from '@/features/customers/components/customers-table';
+import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 
 export const metadata: Metadata = { title: 'Clients' };
@@ -19,12 +20,15 @@ export default async function CustomersPage() {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Clients</h1>
-          <Button asChild>
-            <Link href="/customers/new">Ajouter un client</Link>
-          </Button>
-        </div>
+        <PageHeader
+          title="Clients"
+          description="Gérez vos clients"
+          actions={
+            <Button asChild>
+              <Link href="/customers/new">Ajouter un client</Link>
+            </Button>
+          }
+        />
         <CustomersTable />
       </div>
     </HydrationBoundary>

@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useState } from 'react';
 import { useCreateBike, useUpdateBike } from '../hooks';
 import { Input } from '@/components/ui/input';
@@ -12,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Card, CardContent } from '@/components/ui/card';
 import type { Bike, BikeType } from '@/types';
 
 const bikeTypes: { value: BikeType; label: string }[] = [
@@ -65,92 +67,101 @@ export function BikeForm({ bike }: BikeFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-lg space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="name">Nom</Label>
-        <Input
-          id="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-      </div>
+    <Card className="max-w-lg">
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="name">Nom</Label>
+            <Input
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="brand">Marque</Label>
-        <Input
-          id="brand"
-          value={brand}
-          onChange={(e) => setBrand(e.target.value)}
-          required
-        />
-      </div>
+          <div className="space-y-2">
+            <Label htmlFor="brand">Marque</Label>
+            <Input
+              id="brand"
+              value={brand}
+              onChange={(e) => setBrand(e.target.value)}
+              required
+            />
+          </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="model">Modèle</Label>
-        <Input
-          id="model"
-          value={model}
-          onChange={(e) => setModel(e.target.value)}
-          required
-        />
-      </div>
+          <div className="space-y-2">
+            <Label htmlFor="model">Modèle</Label>
+            <Input
+              id="model"
+              value={model}
+              onChange={(e) => setModel(e.target.value)}
+              required
+            />
+          </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="type">Type</Label>
-        <Select value={type} onValueChange={(v) => setType(v as BikeType)}>
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {bikeTypes.map((t) => (
-              <SelectItem key={t.value} value={t.value}>
-                {t.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+          <div className="space-y-2">
+            <Label htmlFor="type">Type</Label>
+            <Select value={type} onValueChange={(v) => setType(v as BikeType)}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {bikeTypes.map((t) => (
+                  <SelectItem key={t.value} value={t.value}>
+                    {t.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="size">Taille</Label>
-        <Input
-          id="size"
-          value={size}
-          onChange={(e) => setSize(e.target.value)}
-          required
-        />
-      </div>
+          <div className="space-y-2">
+            <Label htmlFor="size">Taille</Label>
+            <Input
+              id="size"
+              value={size}
+              onChange={(e) => setSize(e.target.value)}
+              required
+            />
+          </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="price">Prix (EUR)</Label>
-        <Input
-          id="price"
-          type="number"
-          step="0.01"
-          min="0"
-          value={priceEur}
-          onChange={(e) => setPriceEur(e.target.value)}
-          required
-        />
-      </div>
+          <div className="space-y-2">
+            <Label htmlFor="price">Prix (EUR)</Label>
+            <Input
+              id="price"
+              type="number"
+              step="0.01"
+              min="0"
+              value={priceEur}
+              onChange={(e) => setPriceEur(e.target.value)}
+              required
+            />
+          </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="dailyRate">Tarif journalier (EUR)</Label>
-        <Input
-          id="dailyRate"
-          type="number"
-          step="0.01"
-          min="0"
-          value={dailyRateEur}
-          onChange={(e) => setDailyRateEur(e.target.value)}
-          required
-        />
-      </div>
+          <div className="space-y-2">
+            <Label htmlFor="dailyRate">Tarif journalier (EUR)</Label>
+            <Input
+              id="dailyRate"
+              type="number"
+              step="0.01"
+              min="0"
+              value={dailyRateEur}
+              onChange={(e) => setDailyRateEur(e.target.value)}
+              required
+            />
+          </div>
 
-      <Button type="submit" disabled={isPending}>
-        {isPending ? 'Enregistrement...' : isEdit ? 'Modifier' : 'Créer'}
-      </Button>
-    </form>
+          <div className="flex gap-2">
+            <Button type="submit" disabled={isPending}>
+              {isPending ? 'Enregistrement...' : isEdit ? 'Modifier' : 'Créer'}
+            </Button>
+            <Button type="button" variant="outline" asChild>
+              <Link href="/bikes">Annuler</Link>
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   );
 }
