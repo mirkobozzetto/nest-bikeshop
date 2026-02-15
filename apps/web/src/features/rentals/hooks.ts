@@ -41,8 +41,8 @@ export function useCreateRental() {
       toast.success('Location créée avec succès');
       void queryClient.invalidateQueries({ queryKey: rentalKeys.lists() });
     },
-    onError: () => {
-      toast.error('Erreur lors de la création de la location');
+    onError: (error: Error) => {
+      toast.error(error.message || 'Erreur lors de la création de la location');
     },
   });
 }
@@ -56,8 +56,8 @@ export function useUpdateRentalStatus(id: string) {
       void queryClient.invalidateQueries({ queryKey: rentalKeys.detail(id) });
       void queryClient.invalidateQueries({ queryKey: rentalKeys.lists() });
     },
-    onError: () => {
-      toast.error('Erreur lors du changement de statut');
+    onError: (error: Error) => {
+      toast.error(error.message || 'Erreur lors du changement de statut');
     },
   });
 }
@@ -71,8 +71,8 @@ export function useExtendRental(id: string) {
       void queryClient.invalidateQueries({ queryKey: rentalKeys.detail(id) });
       void queryClient.invalidateQueries({ queryKey: rentalKeys.lists() });
     },
-    onError: () => {
-      toast.error('Erreur lors de la prolongation de la location');
+    onError: (error: Error) => {
+      toast.error(error.message || 'Erreur lors de la prolongation de la location');
     },
   });
 }

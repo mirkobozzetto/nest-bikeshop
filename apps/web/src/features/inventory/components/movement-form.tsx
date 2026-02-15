@@ -52,6 +52,7 @@ export function MovementForm({
 
   function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (quantity < 1 || !Number.isInteger(quantity)) return;
     mutation.mutate(
       {
         bikeId,

@@ -37,6 +37,10 @@ export function SaleForm() {
 
   function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
+    const hasInvalidItems = items.some(
+      (item) => !item.bikeId.trim() || item.priceCents <= 0,
+    );
+    if (!customerId.trim() || hasInvalidItems) return;
     void createSale.mutateAsync({ customerId, items });
   }
 

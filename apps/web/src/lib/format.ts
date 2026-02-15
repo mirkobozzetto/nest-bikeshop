@@ -6,12 +6,15 @@ export function formatCents(cents: number): string {
 }
 
 export function formatDate(isoDate: string): string {
-  return new Intl.DateTimeFormat('fr-FR').format(new Date(isoDate));
+  return new Intl.DateTimeFormat('fr-FR', {
+    timeZone: 'Europe/Paris',
+  }).format(new Date(isoDate));
 }
 
 export function formatDateTime(isoDate: string): string {
   return new Intl.DateTimeFormat('fr-FR', {
     dateStyle: 'short',
     timeStyle: 'short',
+    timeZone: 'Europe/Paris',
   }).format(new Date(isoDate));
 }

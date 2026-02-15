@@ -39,8 +39,8 @@ export function useCreateCustomer() {
       void queryClient.invalidateQueries({ queryKey: customerKeys.all });
       router.push('/customers');
     },
-    onError: () => {
-      toast.error('Erreur lors de la création du client');
+    onError: (error: Error) => {
+      toast.error(error.message || 'Erreur lors de la création du client');
     },
   });
 }
@@ -54,8 +54,8 @@ export function useUpdateCustomer(id: string) {
       toast.success('Client modifié avec succès');
       void queryClient.invalidateQueries({ queryKey: customerKeys.all });
     },
-    onError: () => {
-      toast.error('Erreur lors de la modification du client');
+    onError: (error: Error) => {
+      toast.error(error.message || 'Erreur lors de la modification du client');
     },
   });
 }
