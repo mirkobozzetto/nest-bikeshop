@@ -5,12 +5,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PageHeader } from '@/components/page-header';
 import { DetailGrid, DetailItem } from '@/components/detail-grid';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -91,20 +86,16 @@ export function RentalDetail({ id }: { id: string }) {
           <DetailGrid>
             <DetailItem
               label="Client"
-              value={<span className="font-mono text-sm">{rental.customerId}</span>}
+              value={
+                <span className="font-mono text-sm">{rental.customerId}</span>
+              }
             />
             <DetailItem
               label="Statut"
               value={<RentalStatusBadge status={rental.status} />}
             />
-            <DetailItem
-              label="Début"
-              value={formatDate(rental.startDate)}
-            />
-            <DetailItem
-              label="Fin"
-              value={formatDate(rental.endDate)}
-            />
+            <DetailItem label="Début" value={formatDate(rental.startDate)} />
+            <DetailItem label="Fin" value={formatDate(rental.endDate)} />
             <DetailItem
               label="Total"
               value={
@@ -133,7 +124,9 @@ export function RentalDetail({ id }: { id: string }) {
                   key={i}
                   className="flex items-center justify-between rounded border p-2 text-sm"
                 >
-                  <span className="font-mono">{item.bikeId.slice(0, 8)}...</span>
+                  <span className="font-mono">
+                    {item.bikeId.slice(0, 8)}...
+                  </span>
                   <span>{formatCents(item.dailyRateCents)}/jour</span>
                 </li>
               ))}

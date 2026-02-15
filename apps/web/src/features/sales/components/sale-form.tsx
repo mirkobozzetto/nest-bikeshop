@@ -57,7 +57,12 @@ export function SaleForm() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <Label>Articles</Label>
-              <Button type="button" variant="outline" size="sm" onClick={addItem}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addItem}
+              >
                 <Plus />
                 Ajouter
               </Button>
@@ -70,7 +75,9 @@ export function SaleForm() {
                   <Input
                     id={`bikeId-${index}`}
                     value={item.bikeId}
-                    onChange={(e) => updateItem(index, 'bikeId', e.target.value)}
+                    onChange={(e) =>
+                      updateItem(index, 'bikeId', e.target.value)
+                    }
                     required
                   />
                 </div>
@@ -102,7 +109,11 @@ export function SaleForm() {
             ))}
           </div>
 
-          <Button type="submit" disabled={createSale.isPending} className="w-full">
+          <Button
+            type="submit"
+            disabled={createSale.isPending}
+            className="w-full"
+          >
             {createSale.isPending ? 'Enregistrement...' : 'Créer la vente'}
           </Button>
         </form>

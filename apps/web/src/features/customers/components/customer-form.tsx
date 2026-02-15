@@ -88,7 +88,11 @@ export function CustomerForm({ customer }: CustomerFormProps) {
             <Button type="submit" disabled={mutation.isPending}>
               {isEdit ? 'Mettre à jour' : 'Créer'}
             </Button>
-            <Button type="button" variant="outline" onClick={() => router.back()}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => router.back()}
+            >
               Annuler
             </Button>
           </div>

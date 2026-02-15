@@ -88,7 +88,10 @@ export function MovementForm({
 
           <div className="space-y-2">
             <Label htmlFor="type">Type</Label>
-            <Select value={type} onValueChange={(v) => setType(v as MovementType)}>
+            <Select
+              value={type}
+              onValueChange={(v) => setType(v as MovementType)}
+            >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
@@ -152,8 +155,14 @@ export function MovementForm({
             />
           </div>
 
-          <Button type="submit" disabled={mutation.isPending || !bikeId} className="w-full">
-            {mutation.isPending ? 'Enregistrement...' : 'Enregistrer le mouvement'}
+          <Button
+            type="submit"
+            disabled={mutation.isPending || !bikeId}
+            className="w-full"
+          >
+            {mutation.isPending
+              ? 'Enregistrement...'
+              : 'Enregistrer le mouvement'}
           </Button>
         </form>
       </CardContent>

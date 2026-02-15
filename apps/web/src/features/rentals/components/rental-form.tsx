@@ -4,10 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Card,
-  CardContent,
-} from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import type { RentalItem } from '@/types';
 import { useCreateRental } from '../hooks';
 
@@ -92,7 +89,12 @@ export function RentalForm() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <Label>Vélos</Label>
-              <Button type="button" variant="outline" size="sm" onClick={addItem}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addItem}
+              >
                 Ajouter un vélo
               </Button>
             </div>
@@ -103,7 +105,9 @@ export function RentalForm() {
                   <Label>ID Vélo</Label>
                   <Input
                     value={item.bikeId}
-                    onChange={(e) => updateItem(index, 'bikeId', e.target.value)}
+                    onChange={(e) =>
+                      updateItem(index, 'bikeId', e.target.value)
+                    }
                     required
                   />
                 </div>
