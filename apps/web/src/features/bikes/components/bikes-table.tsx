@@ -24,6 +24,8 @@ import {
 import { useUpdateBikeStatus } from '../hooks';
 import { EmptyState } from '@/components/empty-state';
 import { Bike as BikeIcon } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import type { BikeStatusAction } from '@/types';
 
 const typeLabels: Record<string, string> = {
@@ -45,7 +47,54 @@ export function BikesTable() {
 
   if (isLoading) {
     return (
-      <p className="text-muted-foreground py-8 text-center">Chargement...</p>
+      <Card>
+        <CardContent className="pt-6">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Nom</TableHead>
+                <TableHead>Marque</TableHead>
+                <TableHead>Type</TableHead>
+                <TableHead>Taille</TableHead>
+                <TableHead>Prix</TableHead>
+                <TableHead>Tarif/jour</TableHead>
+                <TableHead>Statut</TableHead>
+                <TableHead className="w-[70px]">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {Array.from({ length: 5 }).map((_, idx) => (
+                <TableRow key={idx}>
+                  <TableCell>
+                    <Skeleton className="h-4 w-32" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-24" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-20" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-16" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-24" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-24" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-20" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-8" />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
     );
   }
 
@@ -62,25 +111,29 @@ export function BikesTable() {
   }
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Nom</TableHead>
-          <TableHead>Marque</TableHead>
-          <TableHead>Type</TableHead>
-          <TableHead>Taille</TableHead>
-          <TableHead>Prix</TableHead>
-          <TableHead>Tarif/jour</TableHead>
-          <TableHead>Statut</TableHead>
-          <TableHead className="w-[70px]">Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {bikes.map((bike) => (
-          <BikeRow key={bike.id} bike={bike} />
-        ))}
-      </TableBody>
-    </Table>
+    <Card>
+      <CardContent className="pt-6">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Nom</TableHead>
+              <TableHead>Marque</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead>Taille</TableHead>
+              <TableHead>Prix</TableHead>
+              <TableHead>Tarif/jour</TableHead>
+              <TableHead>Statut</TableHead>
+              <TableHead className="w-[70px]">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {bikes.map((bike) => (
+              <BikeRow key={bike.id} bike={bike} />
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
   );
 }
 

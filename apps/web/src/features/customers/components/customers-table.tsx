@@ -4,6 +4,9 @@ import Link from 'next/link';
 import { Users } from 'lucide-react';
 import { useCustomers } from '../hooks';
 import { EmptyState } from '@/components/empty-state';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -17,7 +20,17 @@ export function CustomersTable() {
   const { data: customers, isLoading } = useCustomers();
 
   if (isLoading) {
-    return <p>Chargement...</p>;
+    return (
+      <Card>
+        <CardContent className="pt-6">
+          <div className="space-y-3">
+            {Array.from({ length: 5 }, (_, i) => (
+              <Skeleton key={i} className="h-12 w-full" />
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    );
   }
 
   if (!customers?.length) {
@@ -33,36 +46,37 @@ export function CustomersTable() {
   }
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Prénom</TableHead>
-          <TableHead>Nom</TableHead>
-          <TableHead>Email</TableHead>
-          <TableHead>Téléphone</TableHead>
-          <TableHead>Adresse</TableHead>
-          <TableHead>Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {customers.map((customer) => (
-          <TableRow key={customer.id}>
-            <TableCell>{customer.firstName}</TableCell>
-            <TableCell>{customer.lastName}</TableCell>
-            <TableCell>{customer.email}</TableCell>
-            <TableCell>{customer.phone}</TableCell>
-            <TableCell>{customer.address}</TableCell>
-            <TableCell>
-              <Link
-                href={`/customers/${customer.id}`}
-                className="text-primary hover:underline"
-              >
-                Voir
-              </Link>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <Card>
+      <CardContent className="pt-6">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Prénom</TableHead>
+              <TableHead>Nom</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Téléphone</TableHead>
+              <TableHead>Adresse</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {customers.map((customer) => (
+              <TableRow key={customer.id}>
+                <TableCell>{customer.firstName}</TableCell>
+                <TableCell>{customer.lastName}</TableCell>
+                <TableCell>{customer.email}</TableCell>
+                <TableCell>{customer.phone}</TableCell>
+                <TableCell>{customer.address}</TableCell>
+                <TableCell>
+                  <Button asChild variant="ghost" size="sm">
+                    <Link href={`/customers/${customer.id}`}>Voir</Link>
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
   );
 }

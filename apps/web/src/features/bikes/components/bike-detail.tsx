@@ -11,8 +11,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { ConfirmDialog, useConfirmDialog } from '@/components/confirm-dialog';
+import { PageHeader } from '@/components/page-header';
+import { DetailGrid, DetailItem } from '@/components/detail-grid';
+import { Skeleton } from '@/components/ui/skeleton';
 import type { BikeStatusAction } from '@/types';
 
 const typeLabels: Record<string, string> = {
@@ -48,75 +51,74 @@ export function BikeDetail({ id }: { id: string }) {
 
   if (isLoading || !bike) {
     return (
-      <p className="text-muted-foreground py-8 text-center">Chargement...</p>
+      <div className="space-y-6">
+        <Skeleton className="h-10 w-64" />
+        <Card>
+          <CardContent className="pt-6">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 8 }).map((_, idx) => (
+                <div key={idx} className="space-y-2">
+                  <Skeleton className="h-4 w-20" />
+                  <Skeleton className="h-5 w-32" />
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">{bike.name}</h1>
-        <div className="flex gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">Changer le statut</Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {statusActions.map((sa) => (
-                <DropdownMenuItem
-                  key={sa.action}
-                  onClick={() => handleStatusAction(sa.action)}
-                >
-                  {sa.label}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <Button variant="outline" asChild>
-            <Link href="/bikes">Retour</Link>
-          </Button>
-        </div>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        title={bike.name}
+        actions={
+          <div className="flex gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">Changer le statut</Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {statusActions.map((sa) => (
+                  <DropdownMenuItem
+                    key={sa.action}
+                    onClick={() => handleStatusAction(sa.action)}
+                  >
+                    {sa.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Button variant="outline" asChild>
+              <Link href="/bikes">Retour</Link>
+            </Button>
+          </div>
+        }
+      />
 
-      <Card className="p-6">
-        <dl className="grid grid-cols-2 gap-4">
-          <div>
-            <dt className="text-muted-foreground text-sm">Marque</dt>
-            <dd className="font-medium">{bike.brand}</dd>
-          </div>
-          <div>
-            <dt className="text-muted-foreground text-sm">Modèle</dt>
-            <dd className="font-medium">{bike.model}</dd>
-          </div>
-          <div>
-            <dt className="text-muted-foreground text-sm">Type</dt>
-            <dd className="font-medium">
-              {typeLabels[bike.type] ?? bike.type}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-muted-foreground text-sm">Taille</dt>
-            <dd className="font-medium">{bike.size}</dd>
-          </div>
-          <div>
-            <dt className="text-muted-foreground text-sm">Prix</dt>
-            <dd className="font-medium">{formatCents(bike.priceCents)}</dd>
-          </div>
-          <div>
-            <dt className="text-muted-foreground text-sm">Tarif journalier</dt>
-            <dd className="font-medium">{formatCents(bike.dailyRateCents)}</dd>
-          </div>
-          <div>
-            <dt className="text-muted-foreground text-sm">Statut</dt>
-            <dd>
-              <BikeStatusBadge status={bike.status} />
-            </dd>
-          </div>
-          <div>
-            <dt className="text-muted-foreground text-sm">Créé le</dt>
-            <dd className="font-medium">{formatDate(bike.createdAt)}</dd>
-          </div>
-        </dl>
+      <Card>
+        <CardContent className="pt-6">
+          <DetailGrid>
+            <DetailItem label="Marque" value={bike.brand} />
+            <DetailItem label="Modèle" value={bike.model} />
+            <DetailItem
+              label="Type"
+              value={typeLabels[bike.type] ?? bike.type}
+            />
+            <DetailItem label="Taille" value={bike.size} />
+            <DetailItem label="Prix" value={formatCents(bike.priceCents)} />
+            <DetailItem
+              label="Tarif journalier"
+              value={formatCents(bike.dailyRateCents)}
+            />
+            <DetailItem
+              label="Statut"
+              value={<BikeStatusBadge status={bike.status} />}
+            />
+            <DetailItem label="Créé le" value={formatDate(bike.createdAt)} />
+          </DetailGrid>
+        </CardContent>
       </Card>
 
       <ConfirmDialog

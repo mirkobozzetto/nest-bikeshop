@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { InboxIcon, type LucideIcon } from 'lucide-react';
+import { InboxIcon, Plus, type LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface EmptyStateProps {
@@ -18,17 +18,20 @@ export function EmptyState({
   actionHref,
 }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-12 text-center">
-      <div className="bg-muted mb-4 rounded-full p-3">
-        <Icon className="text-muted-foreground h-6 w-6" />
+    <div className="flex flex-col items-center justify-center rounded-xl border border-dashed py-16 text-center">
+      <div className="mb-4 rounded-xl bg-muted p-4">
+        <Icon className="h-8 w-8 text-muted-foreground" />
       </div>
       <h3 className="text-lg font-semibold">{title}</h3>
-      <p className="text-muted-foreground mt-1 max-w-sm text-sm">
+      <p className="text-muted-foreground mt-1.5 max-w-xs text-sm">
         {description}
       </p>
       {actionLabel && actionHref && (
-        <Button className="mt-4" asChild>
-          <Link href={actionHref}>{actionLabel}</Link>
+        <Button className="mt-6" asChild>
+          <Link href={actionHref}>
+            <Plus className="h-4 w-4" />
+            {actionLabel}
+          </Link>
         </Button>
       )}
     </div>

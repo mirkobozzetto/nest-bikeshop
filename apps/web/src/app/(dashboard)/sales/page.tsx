@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Plus } from 'lucide-react';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
+import { PageHeader } from '@/components/page-header';
 import { getQueryClient } from '@/lib/query';
 import { fetchSales } from '@/features/sales/api';
 import { saleKeys } from '@/features/sales/keys';
@@ -21,15 +22,18 @@ export default async function SalesPage() {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Ventes</h1>
-          <Button asChild>
-            <Link href="/sales/new">
-              <Plus />
-              Nouvelle vente
-            </Link>
-          </Button>
-        </div>
+        <PageHeader
+          title="Ventes"
+          description="Gérez vos ventes"
+          actions={
+            <Button asChild>
+              <Link href="/sales/new">
+                <Plus />
+                Nouvelle vente
+              </Link>
+            </Button>
+          }
+        />
         <SaleFilters />
         <SalesTable />
       </div>

@@ -5,6 +5,10 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { PageHeader } from '@/components/page-header';
+import { DetailGrid, DetailItem } from '@/components/detail-grid';
+import { Skeleton } from '@/components/ui/skeleton';
 import { formatCents, formatDate } from '@/lib/format';
 import { ConfirmDialog, useConfirmDialog } from '@/components/confirm-dialog';
 import type { RentalStatus, RentalStatusAction } from '@/types';
@@ -44,7 +48,10 @@ export function RentalDetail({ id }: { id: string }) {
 
   if (isLoading) {
     return (
-      <p className="text-muted-foreground py-8 text-center">Chargement...</p>
+      <div className="space-y-6">
+        <Skeleton className="h-10 w-32" />
+        <Skeleton className="h-32 w-full" />
+      </div>
     );
   }
 
@@ -65,57 +72,67 @@ export function RentalDetail({ id }: { id: string }) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">Location</h1>
-        <Button variant="outline" asChild>
-          <Link href="/rentals">Retour</Link>
-        </Button>
-      </div>
+      <PageHeader
+        title="Location"
+        actions={
+          <Button variant="outline" asChild>
+            <Link href="/rentals">Retour</Link>
+          </Button>
+        }
+      />
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <div>
-          <p className="text-muted-foreground text-sm">Client</p>
-          <p className="font-mono text-sm">{rental.customerId}</p>
-        </div>
-        <div>
-          <p className="text-muted-foreground text-sm">Statut</p>
-          <RentalStatusBadge status={rental.status} />
-        </div>
-        <div>
-          <p className="text-muted-foreground text-sm">Début</p>
-          <p>{formatDate(rental.startDate)}</p>
-        </div>
-        <div>
-          <p className="text-muted-foreground text-sm">Fin</p>
-          <p>{formatDate(rental.endDate)}</p>
-        </div>
-        <div>
-          <p className="text-muted-foreground text-sm">Total</p>
-          <p className="text-lg font-semibold">
-            {formatCents(rental.totalCents)}
-          </p>
-        </div>
-        <div>
-          <p className="text-muted-foreground text-sm">Vélos</p>
-          <p>{rental.items.length} vélo(s)</p>
-        </div>
-      </div>
+      <Card>
+        <CardContent className="pt-6">
+          <DetailGrid>
+            <DetailItem
+              label="Client"
+              value={
+                <span className="font-mono text-sm">{rental.customerId}</span>
+              }
+            />
+            <DetailItem
+              label="Statut"
+              value={<RentalStatusBadge status={rental.status} />}
+            />
+            <DetailItem label="Début" value={formatDate(rental.startDate)} />
+            <DetailItem label="Fin" value={formatDate(rental.endDate)} />
+            <DetailItem
+              label="Total"
+              value={
+                <span className="text-lg font-semibold">
+                  {formatCents(rental.totalCents)}
+                </span>
+              }
+            />
+            <DetailItem
+              label="Vélos"
+              value={`${rental.items.length} vélo(s)`}
+            />
+          </DetailGrid>
+        </CardContent>
+      </Card>
 
       {rental.items.length > 0 && (
-        <div className="space-y-2">
-          <h2 className="text-lg font-semibold">Vélos loués</h2>
-          <ul className="space-y-1">
-            {rental.items.map((item, i) => (
-              <li
-                key={i}
-                className="flex items-center justify-between rounded border p-2 text-sm"
-              >
-                <span className="font-mono">{item.bikeId.slice(0, 8)}...</span>
-                <span>{formatCents(item.dailyRateCents)}/jour</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Vélos loués</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2">
+              {rental.items.map((item, i) => (
+                <li
+                  key={i}
+                  className="flex items-center justify-between rounded border p-2 text-sm"
+                >
+                  <span className="font-mono">
+                    {item.bikeId.slice(0, 8)}...
+                  </span>
+                  <span>{formatCents(item.dailyRateCents)}/jour</span>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
       )}
 
       {actions.length > 0 && (
@@ -134,21 +151,28 @@ export function RentalDetail({ id }: { id: string }) {
       )}
 
       {rental.status === 'ACTIVE' && (
-        <form onSubmit={handleExtend} className="flex items-end gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="newEndDate">Prolonger jusqu&apos;au</Label>
-            <Input
-              id="newEndDate"
-              type="date"
-              value={newEndDate}
-              onChange={(e) => setNewEndDate(e.target.value)}
-              required
-            />
-          </div>
-          <Button type="submit" variant="outline" disabled={extend.isPending}>
-            Prolonger
-          </Button>
-        </form>
+        <Card>
+          <CardHeader>
+            <CardTitle>Prolonger la location</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleExtend} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="newEndDate">Prolonger jusqu&apos;au</Label>
+                <Input
+                  id="newEndDate"
+                  type="date"
+                  value={newEndDate}
+                  onChange={(e) => setNewEndDate(e.target.value)}
+                  required
+                />
+              </div>
+              <Button type="submit" disabled={extend.isPending}>
+                Prolonger
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
       )}
 
       <ConfirmDialog
