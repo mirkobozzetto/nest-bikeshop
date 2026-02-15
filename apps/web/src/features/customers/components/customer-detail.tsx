@@ -19,7 +19,7 @@ export function CustomerDetail({ id }: CustomerDetailProps) {
         <CardContent className="pt-6 space-y-4">
           <Skeleton className="h-8 w-64" />
           <div className="space-y-3">
-            {[...Array(4)].map((_, i) => (
+            {Array.from({ length: 4 }, (_, i) => (
               <Skeleton key={i} className="h-10 w-full" />
             ))}
           </div>
@@ -49,7 +49,10 @@ export function CustomerDetail({ id }: CustomerDetailProps) {
             <DetailItem label="Email" value={customer.email} />
             <DetailItem label="Téléphone" value={customer.phone} />
             <DetailItem label="Adresse" value={customer.address} />
-            <DetailItem label="Créé le" value={formatDate(customer.createdAt)} />
+            <DetailItem
+              label="Créé le"
+              value={formatDate(customer.createdAt)}
+            />
           </DetailGrid>
         </div>
       </CardContent>
