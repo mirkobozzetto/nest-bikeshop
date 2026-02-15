@@ -38,8 +38,8 @@ export function useRecordMovement() {
         queryKey: inventoryKeys.movements(variables.bikeId),
       });
     },
-    onError: () => {
-      toast.error("Erreur lors de l'enregistrement du mouvement");
+    onError: (error: Error) => {
+      toast.error(error.message || "Erreur lors de l'enregistrement du mouvement");
     },
   });
 }

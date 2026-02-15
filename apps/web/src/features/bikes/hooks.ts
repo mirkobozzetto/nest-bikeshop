@@ -43,10 +43,9 @@ export function useCreateBike() {
       toast.success('Vélo créé avec succès');
       void queryClient.invalidateQueries({ queryKey: bikeKeys.all });
       router.push('/bikes');
-      router.refresh();
     },
-    onError: () => {
-      toast.error('Erreur lors de la création du vélo');
+    onError: (error: Error) => {
+      toast.error(error.message || 'Erreur lors de la création du vélo');
     },
   });
 }
@@ -60,8 +59,8 @@ export function useUpdateBike(id: string) {
       void queryClient.invalidateQueries({ queryKey: bikeKeys.all });
       void queryClient.invalidateQueries({ queryKey: bikeKeys.detail(id) });
     },
-    onError: () => {
-      toast.error('Erreur lors de la modification du vélo');
+    onError: (error: Error) => {
+      toast.error(error.message || 'Erreur lors de la modification du vélo');
     },
   });
 }
@@ -75,8 +74,8 @@ export function useUpdateBikeStatus(id: string) {
       void queryClient.invalidateQueries({ queryKey: bikeKeys.all });
       void queryClient.invalidateQueries({ queryKey: bikeKeys.detail(id) });
     },
-    onError: () => {
-      toast.error('Erreur lors du changement de statut');
+    onError: (error: Error) => {
+      toast.error(error.message || 'Erreur lors du changement de statut');
     },
   });
 }
