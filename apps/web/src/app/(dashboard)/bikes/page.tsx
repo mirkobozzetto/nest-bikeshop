@@ -6,6 +6,7 @@ import { fetchBikes } from '@/features/bikes/api';
 import { bikeKeys } from '@/features/bikes/keys';
 import { BikesTable } from '@/features/bikes/components/bikes-table';
 import { BikeFilters } from '@/features/bikes/components/bike-filters';
+import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 
 export const metadata: Metadata = { title: 'Vélos' };
@@ -24,13 +25,16 @@ export default async function BikesPage({ searchParams }: Props) {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Vélos</h1>
-          <Button asChild>
-            <Link href="/bikes/new">Ajouter un vélo</Link>
-          </Button>
-        </div>
+      <div className="space-y-6">
+        <PageHeader
+          title="Vélos"
+          description="Gérez votre catalogue de vélos"
+          actions={
+            <Button asChild>
+              <Link href="/bikes/new">Ajouter un vélo</Link>
+            </Button>
+          }
+        />
         <BikeFilters />
         <BikesTable />
       </div>
