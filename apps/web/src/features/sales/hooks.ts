@@ -30,8 +30,8 @@ export function useCreateSale() {
       toast.success('Vente créée avec succès');
       void queryClient.invalidateQueries({ queryKey: saleKeys.lists() });
     },
-    onError: () => {
-      toast.error('Erreur lors de la création de la vente');
+    onError: (error: Error) => {
+      toast.error(error.message || 'Erreur lors de la création de la vente');
     },
   });
 }
@@ -45,8 +45,8 @@ export function useUpdateSaleStatus(id: string) {
       void queryClient.invalidateQueries({ queryKey: saleKeys.detail(id) });
       void queryClient.invalidateQueries({ queryKey: saleKeys.lists() });
     },
-    onError: () => {
-      toast.error('Erreur lors du changement de statut');
+    onError: (error: Error) => {
+      toast.error(error.message || 'Erreur lors du changement de statut');
     },
   });
 }

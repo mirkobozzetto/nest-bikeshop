@@ -49,14 +49,19 @@ export function BikeForm({ bike }: BikeFormProps) {
 
   function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
+    const price = parseFloat(priceEur);
+    const dailyRate = parseFloat(dailyRateEur);
+    if (Number.isNaN(price) || Number.isNaN(dailyRate) || price < 0 || dailyRate < 0) {
+      return;
+    }
     const input = {
       name,
       brand,
       model,
       type,
       size,
-      priceCents: Math.round(parseFloat(priceEur) * 100),
-      dailyRateCents: Math.round(parseFloat(dailyRateEur) * 100),
+      priceCents: Math.round(price * 100),
+      dailyRateCents: Math.round(dailyRate * 100),
     };
 
     if (isEdit) {
