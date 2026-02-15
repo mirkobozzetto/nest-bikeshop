@@ -5,8 +5,11 @@ import { useQueryState } from 'nuqs';
 import { StockDisplay } from './stock-display';
 import { MovementsTable } from './movements-table';
 import { MovementForm } from './movement-form';
+import { Card, CardContent } from '@/components/ui/card';
+import { EmptyState } from '@/components/empty-state';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Package } from 'lucide-react';
 
 export function InventoryPageClient() {
   const [bikeId, setBikeId] = useQueryState('bikeId', { defaultValue: '' });
@@ -14,16 +17,24 @@ export function InventoryPageClient() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Input
-          placeholder="Entrer l'ID du vélo..."
-          value={bikeId}
-          onChange={(e) => void setBikeId(e.target.value)}
-          className="max-w-sm"
-        />
-      </div>
+      <Card>
+        <CardContent className="pt-6">
+          <Input
+            placeholder="Entrer l'ID du vélo..."
+            value={bikeId}
+            onChange={(e) => void setBikeId(e.target.value)}
+            className="max-w-sm"
+          />
+        </CardContent>
+      </Card>
 
-      {bikeId && (
+      {!bikeId ? (
+        <EmptyState
+          icon={Package}
+          title="Consultez le stock"
+          description="Entrez un ID de vélo pour consulter le stock et les mouvements."
+        />
+      ) : (
         <>
           <StockDisplay bikeId={bikeId} />
           <div className="space-y-4">

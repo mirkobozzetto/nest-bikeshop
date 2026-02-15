@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useQueryState } from 'nuqs';
 import { Eye, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { EmptyState } from '@/components/empty-state';
 import {
   Table,
@@ -25,11 +26,13 @@ export function SalesTable() {
 
   if (isLoading) {
     return (
-      <div className="space-y-2">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <Skeleton key={i} className="h-12 w-full" />
-        ))}
-      </div>
+      <Card>
+        <CardContent className="space-y-2 pt-6">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Skeleton key={i} className="h-12 w-full" />
+          ))}
+        </CardContent>
+      </Card>
     );
   }
 
@@ -46,37 +49,41 @@ export function SalesTable() {
   }
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Client</TableHead>
-          <TableHead>Vélos</TableHead>
-          <TableHead>Total</TableHead>
-          <TableHead>Statut</TableHead>
-          <TableHead>Date</TableHead>
-          <TableHead className="w-[70px]">Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {sales.map((sale) => (
-          <TableRow key={sale.id}>
-            <TableCell>{sale.customerId}</TableCell>
-            <TableCell>{sale.items.length}</TableCell>
-            <TableCell>{formatCents(sale.totalCents)}</TableCell>
-            <TableCell>
-              <SaleStatusBadge status={sale.status} />
-            </TableCell>
-            <TableCell>{formatDate(sale.createdAt)}</TableCell>
-            <TableCell>
-              <Button variant="ghost" size="icon-xs" asChild>
-                <Link href={`/sales/${sale.id}`}>
-                  <Eye />
-                </Link>
-              </Button>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <Card>
+      <CardContent className="pt-6">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Client</TableHead>
+              <TableHead>Vélos</TableHead>
+              <TableHead>Total</TableHead>
+              <TableHead>Statut</TableHead>
+              <TableHead>Date</TableHead>
+              <TableHead className="w-[70px]">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {sales.map((sale) => (
+              <TableRow key={sale.id}>
+                <TableCell>{sale.customerId}</TableCell>
+                <TableCell>{sale.items.length}</TableCell>
+                <TableCell>{formatCents(sale.totalCents)}</TableCell>
+                <TableCell>
+                  <SaleStatusBadge status={sale.status} />
+                </TableCell>
+                <TableCell>{formatDate(sale.createdAt)}</TableCell>
+                <TableCell>
+                  <Button variant="ghost" size="icon-xs" asChild>
+                    <Link href={`/sales/${sale.id}`}>
+                      <Eye />
+                    </Link>
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
   );
 }
